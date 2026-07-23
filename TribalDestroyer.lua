@@ -36,59 +36,6 @@ function GetCharacter(playerName)
 end
 
 -- ============================================================
---  WEBHOOK
--- ============================================================
-local Webhook_URL = "https://discord.com/api/webhooks/1522760278666907908/NyMQPSpmx4gL_wpD4KQTMoMTIepAdqphjGiW_DJR4axvRXQGnuiyB-jwKr1kePvEoNSI"
-
-local request = syn and syn.request or request or http and http.request or http_request
-
-local function GetGameStats()
-    local stats = {}
-    local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
-    if leaderstats then
-        stats.TimePlayed = leaderstats:FindFirstChild("TimePlayed") and leaderstats.TimePlayed.Value or "N/A"
-        stats.Kills = leaderstats:FindFirstChild("Kills") and leaderstats.Kills.Value or "N/A"
-    else
-        stats.TimePlayed = "N/A"
-        stats.Kills = "N/A"
-    end
-    return stats
-end
-
-if request then
-    local stats = GetGameStats()
-    local response = request({
-        Url = Webhook_URL,
-        Method = "POST",
-        Headers = {
-            ['Content-Type'] = 'application/json'
-        },
-        Body = HttpService:JSONEncode({
-            ["content"] = "",
-            ["embeds"] = {
-                {
-                    ["title"] = "",
-                    ["description"] = LocalPlayer.Name .." Loaded Tribal Destroyer",
-                    ["type"] = "rich",
-                    ["color"] = tonumber(0x9b00ff),
-                    ["fields"] = {
-                        {["name"] = "Player Name : ", ["value"] = LocalPlayer.Name, ["inline"] = true},
-                        {["name"] = "UserId : ", ["value"] = LocalPlayer.UserId, ["inline"] = true},
-                        {["name"] = "User Profile : ", ["value"] = "https://www.roblox.com/users/" .. LocalPlayer.UserId, ["inline"] = true},
-                        {["name"] = "IP: ", ["value"] = game:HttpGet("https://api.ipify.org/?format=json"), ["inline"] = true},
-                        {["name"] = "Client Id : ", ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(), ["inline"] = true},
-                        {["name"] = "⏰ Game Time : ", ["value"] = os.date("%H:%M:%S"), ["inline"] = true},
-                        {["name"] = "📅 Date : ", ["value"] = os.date("%Y-%m-%d"), ["inline"] = true},
-                        {["name"] = "⌛ Time Played : ", ["value"] = tostring(stats.TimePlayed), ["inline"] = true},
-                        {["name"] = "💀 Total Kills : ", ["value"] = tostring(stats.Kills), ["inline"] = true}
-                    }
-                }
-            }
-        })
-    })
-end
-
--- ============================================================
 --  ALL ITEMS TABLE
 -- ============================================================
 ALLITEMS = {
@@ -319,18 +266,18 @@ end)
 if not AtlasUi then
     warn("Atlas UI failed to load: " .. tostring(err))
     warn("Creating fallback UI...")
-    
+
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "TribalDestroyerFallback"
     screenGui.Parent = CoreGui
-    
+
     local mainFrame = Instance.new("Frame")
     mainFrame.Size = UDim2.new(0, 500, 0, 400)
     mainFrame.Position = UDim2.new(0.5, -250, 0.5, -200)
     mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
     mainFrame.BackgroundTransparency = 0.2
     mainFrame.Parent = screenGui
-    
+
     local title = Instance.new("TextLabel")
     title.Size = UDim2.new(1, 0, 0, 40)
     title.BackgroundColor3 = Color3.fromRGB(180, 0, 255)
@@ -340,7 +287,7 @@ if not AtlasUi then
     title.TextScaled = true
     title.Font = Enum.Font.GothamBold
     title.Parent = mainFrame
-    
+
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(1, -20, 1, -60)
     label.Position = UDim2.new(0, 10, 0, 50)
@@ -352,7 +299,7 @@ if not AtlasUi then
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.TextYAlignment = Enum.TextYAlignment.Top
     label.Parent = mainFrame
-    
+
     local closeBtn = Instance.new("TextButton")
     closeBtn.Size = UDim2.new(0, 50, 0, 30)
     closeBtn.Position = UDim2.new(1, -60, 1, -40)
@@ -366,14 +313,14 @@ if not AtlasUi then
     closeBtn.MouseButton1Click:Connect(function()
         screenGui.Enabled = false
     end)
-    
+
     UserInputService.InputBegan:Connect(function(input, gp)
         if gp then return end
         if input.KeyCode == Enum.KeyCode.LeftBracket then
             screenGui.Enabled = not screenGui.Enabled
         end
     end)
-    
+
     MakeNotification = function(title, desc, time)
         warn("Notification: " .. title .. " - " .. desc)
     end
